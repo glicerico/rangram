@@ -18,7 +18,6 @@ outfile = "rand_grammar.txt"
 
 def main(argv):
     # Populate grammar classes following a Zipf distribution
-
     harmonic_number = sum(Fraction(1, d) for d in range(1, num_classes + 1))
     zipf_fracs = [1 / x / harmonic_number for x in range(1, num_classes + 1)]
     words_per_class = np.array(np.round(np.array(zipf_fracs) * num_words), dtype = "int")
@@ -80,6 +79,7 @@ def main(argv):
 
     """
 
+    dict_vocab = {} # Vocabulary dict per class
     for curr_class, disjunct in dict_disjuncts.items():
         class_entry = f"% Class: {curr_class}\n" # Description of current disjunct
         # Calculate initial word_id for class
@@ -89,7 +89,8 @@ def main(argv):
             lower_id = cumul_words[curr_class - 1]
             
         # Add word list to class_entry
-        class_words = [f'"W{i}_{curr_class}"' for i in range(lower_id, cumul_words[curr_class])]
+        class_words = [f'W{i}' for i in range(lower_id, cumul_words[curr_class])]
+        dict_vocab[curr_class] = class_words
         class_entry += ", ".join(class_words) + ":\n"
         
         # Add every conjunct to disjunct
@@ -109,6 +110,9 @@ def main(argv):
 
     with open(outfile, 'w') as fo:
         fo.write(grammar_text)
+
+    grammar = [dict_disjuncts, dict_vocab]
+    return grammar
 
 if __name__ == "__main__":
     main(sys.argv[1:])
