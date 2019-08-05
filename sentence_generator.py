@@ -30,6 +30,7 @@ class GrammarSampler(object):
         Generate a lexical tree and return its corresponding sentence
         """
         # First generate a random tree
+        self.counter = 0 # reset counter
         tree_sample = self.GenerateTree()
         print(f"Tree:\n{tree_sample}")
         self.flatTree = list(self.Flatten(tree_sample))
