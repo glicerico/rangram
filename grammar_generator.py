@@ -91,7 +91,7 @@ def main(argv):
         # Add word list to class_entry
         class_words = [f'W{i}' for i in range(lower_id, cumul_words[curr_class])]
         dict_vocab[curr_class] = class_words
-        class_entry += ", ".join(class_words) + ":\n"
+        class_entry += " ".join(class_words) + ":\n"
         
         # Add every conjunct to disjunct
         curr_disjunct = []
