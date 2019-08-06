@@ -4,26 +4,54 @@
 import numpy as np
 import collections
 import random as rand
+import re
 
 class GrammarSampler(object):
     """
     Class to generate a random corpus from a given grammar
     """
-    def __init__(self, grammar):
+    def __init__(self, grammar_file):
         """
         Initialize class object. Takes:
         grammar:        dictionary of grammar classes with their connectors
         cumul_words:    cumulative distribution of words in each class
         """
-        self.disj_dict = grammar[0]
-        self.word_dict = grammar[1]
+        self.disj_dict = {}
+        self.word_dict = {}
+        self.GrammarParser(grammar_file)
         self.counter = 0
         self.links = {}
         self.sentence = None
         self.flatTree = None
         self.ullParse = None
         self.ullLinks = []
-        
+
+    def GrammarParser(self, grammar_file):
+        """
+        Opens a given grammar file and parses both vocabulary
+        and disjuncts from each class, then puts them in the 
+        proper class variables.
+        """
+        with open("rand_grammar.txt", 'r') as fg:
+            data = fg.readlines()
+
+        # Read content in grammar file
+        class_num = 0
+        rules = {}
+        for line in data:
+            if re.search(r"^ *%", line):
+                print("Comment")
+            elif re.search(r"^.*: *$", line):
+                self.word_dict[class_num] = line.split()[:-1] # parse vocabulary
+                class_num += 1
+            elif re.search(r"^.*; *$", line):
+                rules[class_num] = line.split(" or ")[:-1]
+
+        # Parse disjuncts
+        for key, value in rules:
+            terms = value[1:-1].split(" & ") # Remove "C" in each connector and separate them
+            self.disj_dict[key] = tuple([tuple(term[1:].split("_")) for term in terms])
+
     def GenerateParse(self):
         """
         MAIN ENTRY POINT
