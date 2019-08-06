@@ -41,6 +41,7 @@ class GrammarSampler(object):
         
         # Obtain links from random tree
         self.ConstructLinks(tree_sample)
+
         sentence_array = np.full(len(self.flatTree), None) # initialize empty sentence array
         
         # Fill sentence array
@@ -50,10 +51,14 @@ class GrammarSampler(object):
             for val in value:
                 val_word, val_pos = self.ReturnPos(val)
                 sentence_array[val_pos] = val_word
-                self.ullLinks.append(f"{key_pos} {key_word} {val_pos} {val_word}")
-                
+                if key_pos < val_pos:
+                    self.ullLinks.append(f"{key_pos} {key_word} {val_pos} {val_word}")
+                else:
+                    self.ullLinks.append(f"{val_pos} {val_word} {key_pos} {key_word}")
+
         # Concatenate parse text output
         self.sentence = " ".join(sentence_array)
+        self.ullLinks.sort()
         self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks)
         print(f"ULL parse: \n{self.ullParse}")
 
@@ -115,7 +120,7 @@ class GrammarSampler(object):
     def SampleWord(self, pos, grammar_class):
         """
         Samples word from given grammar_class, and returns string in format
-        "Wa_b_c", where a is the word number, b is the word class, c is word's position
+        "word_a_b", where a is the word class, b is word's position
         in the sentence
         """
         chosen_word = rand.choice(self.word_dict[grammar_class])
