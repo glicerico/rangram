@@ -29,12 +29,15 @@ class GrammarSampler(object):
         MAIN ENTRY POINT
         Generate a lexical tree and return its corresponding sentence
         """
+        # Reset global variables
+        self.counter = 0
+        self.ullLinks = []
+        self.links = {}
+
         # First generate a random tree
-        self.counter = 0 # reset counter
         tree_sample = self.GenerateTree()
         print(f"Tree:\n{tree_sample}")
         self.flatTree = list(self.Flatten(tree_sample))
-        print(f"Flat tree: {self.flatTree}")
         
         # Obtain links from random tree
         self.ConstructLinks(tree_sample)
@@ -52,8 +55,9 @@ class GrammarSampler(object):
         # Concatenate parse text output
         self.sentence = " ".join(sentence_array)
         self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks)
-        print(f"Sentence: {self.sentence}")
         print(f"ULL parse: \n{self.ullParse}")
+
+        return self.ullParse
         
     def ReturnPos(self, word_string):
         """
@@ -89,7 +93,6 @@ class GrammarSampler(object):
         """
         if self.counter == 0: # handle initial case
             node_class = rand.randint(0, len(self.disj_dict) - 1)
-            print(f"Seed node_class: {node_class}")
             conjunct = rand.sample(self.disj_dict[node_class], 1)[0]
         else:
             # select one valid production of this class randomly
