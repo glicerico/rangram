@@ -39,18 +39,26 @@ class GrammarSampler(object):
         class_num = 0
         rules = {}
         for line in data:
-            if re.search(r"^ *%", line):
-                print("Comment")
-            elif re.search(r"^.*: *$", line):
-                self.word_dict[class_num] = line.split()[:-1] # parse vocabulary
-                class_num += 1
-            elif re.search(r"^.*; *$", line):
+            line = re.sub(r"[)(]", "", line) # remove all parenthesis
+            if re.search(r"^[^%]*: *$", line):
+                self.word_dict[class_num] = line.split() # parse vocabulary
+                self.word_dict[class_num][-1] = self.word_dict[class_num][-1].rstrip(':') # remove final ":"
+            elif re.search(r"^[^%]*; *$", line):
                 rules[class_num] = line.split(" or ")[:-1]
+                rules[class_num][-1] = rules[class_num][-1].rstrip(';') # remove final ";"
+                class_num += 1
 
-        # Parse disjuncts
-        for key, value in rules:
-            terms = value[1:-1].split(" & ") # Remove "C" in each connector and separate them
-            self.disj_dict[key] = tuple([tuple(term[1:].split("_")) for term in terms])
+        # Parse disjuncts, following specific format as outputted by grammar_generator.py
+        for key, value in rules.items():
+            self.disj_dict[key] = []
+            for conjunct in value:
+                connectors = conjunct.split(" & ")
+                conjunct_list = []
+                for connector in connectors:
+                    split_conn = connector.split("_")
+                    conjunct_list.append((int(split_conn[0][1:]), int(split_conn[1][:-1])))
+                self.disj_dict[key].append(conjunct_list)
+            self.disj_dict[key] = tuple(self.disj_dict[key])
 
     def GenerateParse(self):
         """
