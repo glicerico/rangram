@@ -48,9 +48,6 @@ class GrammarSampler(object):
                 rules[class_num][-1] = rules[class_num][-1].rstrip(';') # remove final ";"
                 class_num += 1
 
-        print("Rules:")
-        print(rules)
-
         # Parse disjuncts, following specific format as outputted by grammar_generator.py
         for key, value in rules.items():
             self.disj_dict[key] = []
@@ -62,8 +59,6 @@ class GrammarSampler(object):
                     conjunct_list.append((int(split_conn[0][1:]), int(split_conn[1][:-1])))
                 self.disj_dict[key].append(conjunct_list)
             self.disj_dict[key] = tuple(self.disj_dict[key])
-
-        print(self.disj_dict)
 
     def GenerateParse(self):
         """
