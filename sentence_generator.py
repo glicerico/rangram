@@ -99,7 +99,7 @@ class GrammarSampler(object):
         # Concatenate parse text output
         self.sentence = " ".join(sentence_array)
         self.ullLinks.sort()
-        self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks)
+        self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks) + "\n"
         print(f"ULL parse: \n{self.ullParse}")
 
         return self.ullParse
