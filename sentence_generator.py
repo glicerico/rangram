@@ -76,7 +76,6 @@ class GrammarSampler(object):
 
         # First generate a random tree
         tree_sample = self.GenerateTree()
-        print(f"Tree:\n{tree_sample}")
         self.flatTree = list(self.Flatten(tree_sample))
         
         # Obtain links from random tree
@@ -99,7 +98,7 @@ class GrammarSampler(object):
         # Concatenate parse text output
         self.sentence = " ".join(sentence_array)
         self.ullLinks.sort()
-        self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks) + "\n"
+        self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks) + "\n\n"
         print(f"ULL parse: \n{self.ullParse}")
 
         return self.ullParse
