@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# Class to generate random sentences from a given grammar.
+# Based on CFG sentence generator at:
+# https://eli.thegreenplace.net/2010/01/28/generating-random-sentences-from-a-context-free-grammar
+
 import numpy as np
 import collections
 import random as rand
