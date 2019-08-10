@@ -32,21 +32,24 @@ class GrammarSampler(object):
         and disjuncts from each class, then puts them in the 
         proper class variables.
         """
-        with open("rand_grammar.txt", 'r') as fg:
+        with open(grammar_file, 'r') as fg:
             data = fg.readlines()
 
         # Read content in grammar file
         class_num = 0
         rules = {}
         for line in data:
-            line = re.sub(r"[)(]", "", line) # remove all parenthesis
+            line = re.sub(r"[)(\n]", "", line) # remove all parenthesis and newlines
             if re.search(r"^[^%]*: *$", line):
                 self.word_dict[class_num] = line.split() # parse vocabulary
                 self.word_dict[class_num][-1] = self.word_dict[class_num][-1].rstrip(':') # remove final ":"
             elif re.search(r"^[^%]*; *$", line):
-                rules[class_num] = line.split(" or ")[:-1]
+                rules[class_num] = line.split(" or ")
                 rules[class_num][-1] = rules[class_num][-1].rstrip(';') # remove final ";"
                 class_num += 1
+
+        print("Rules:")
+        print(rules)
 
         # Parse disjuncts, following specific format as outputted by grammar_generator.py
         for key, value in rules.items():
@@ -59,6 +62,8 @@ class GrammarSampler(object):
                     conjunct_list.append((int(split_conn[0][1:]), int(split_conn[1][:-1])))
                 self.disj_dict[key].append(conjunct_list)
             self.disj_dict[key] = tuple(self.disj_dict[key])
+
+        print(self.disj_dict)
 
     def GenerateParse(self):
         """
