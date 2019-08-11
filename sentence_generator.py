@@ -110,7 +110,7 @@ class GrammarSampler(object):
         """
         split_word = word_string.split("_")
         word_tuple = (int(split_word[2]), int(split_word[1]))
-        return split_word[0], self.flatTree.index(word_tuple)
+        return split_word[0], self.flatTree.index(word_tuple) + 1
 
     def Flatten(self, l): # taken from https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
         """
