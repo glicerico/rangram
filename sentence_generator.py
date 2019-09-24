@@ -86,10 +86,10 @@ class GrammarSampler(object):
         # Fill sentence array
         for key, value in self.links.items():
             key_word, key_pos = self.ReturnPos(key) # search for word-instance position in the tree
-            sentence_array[key_pos] = key_word
+            sentence_array[key_pos - 1] = key_word
             for val in value:
                 val_word, val_pos = self.ReturnPos(val)
-                sentence_array[val_pos] = val_word
+                sentence_array[val_pos - 1] = val_word
                 if key_pos < val_pos:
                     self.ullLinks.append(f"{key_pos} {key_word} {val_pos} {val_word}")
                 else:
