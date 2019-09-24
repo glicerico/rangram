@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# Class to generate random sentences from a given grammar.
+# Based on CFG sentence generator at:
+# https://eli.thegreenplace.net/2010/01/28/generating-random-sentences-from-a-context-free-grammar
+
 import numpy as np
 import collections
 import random as rand
@@ -32,19 +36,19 @@ class GrammarSampler(object):
         and disjuncts from each class, then puts them in the 
         proper class variables.
         """
-        with open("rand_grammar.txt", 'r') as fg:
+        with open(grammar_file, 'r') as fg:
             data = fg.readlines()
 
         # Read content in grammar file
         class_num = 0
         rules = {}
         for line in data:
-            line = re.sub(r"[)(]", "", line) # remove all parenthesis
+            line = re.sub(r"[)(\n]", "", line) # remove all parenthesis and newlines
             if re.search(r"^[^%]*: *$", line):
                 self.word_dict[class_num] = line.split() # parse vocabulary
                 self.word_dict[class_num][-1] = self.word_dict[class_num][-1].rstrip(':') # remove final ":"
             elif re.search(r"^[^%]*; *$", line):
-                rules[class_num] = line.split(" or ")[:-1]
+                rules[class_num] = line.split(" or ")
                 rules[class_num][-1] = rules[class_num][-1].rstrip(';') # remove final ";"
                 class_num += 1
 
@@ -72,7 +76,6 @@ class GrammarSampler(object):
 
         # First generate a random tree
         tree_sample = self.GenerateTree()
-        print(f"Tree:\n{tree_sample}")
         self.flatTree = list(self.Flatten(tree_sample))
         
         # Obtain links from random tree
@@ -83,10 +86,10 @@ class GrammarSampler(object):
         # Fill sentence array
         for key, value in self.links.items():
             key_word, key_pos = self.ReturnPos(key) # search for word-instance position in the tree
-            sentence_array[key_pos] = key_word
+            sentence_array[key_pos - 1] = key_word
             for val in value:
                 val_word, val_pos = self.ReturnPos(val)
-                sentence_array[val_pos] = val_word
+                sentence_array[val_pos - 1] = val_word
                 if key_pos < val_pos:
                     self.ullLinks.append(f"{key_pos} {key_word} {val_pos} {val_word}")
                 else:
@@ -95,7 +98,7 @@ class GrammarSampler(object):
         # Concatenate parse text output
         self.sentence = " ".join(sentence_array)
         self.ullLinks.sort()
-        self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks)
+        self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks) + "\n\n"
         print(f"ULL parse: \n{self.ullParse}")
 
         return self.ullParse
@@ -107,7 +110,7 @@ class GrammarSampler(object):
         """
         split_word = word_string.split("_")
         word_tuple = (int(split_word[2]), int(split_word[1]))
-        return split_word[0], self.flatTree.index(word_tuple)
+        return split_word[0], self.flatTree.index(word_tuple) + 1
 
     def Flatten(self, l): # taken from https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
         """
