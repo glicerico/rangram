@@ -23,7 +23,7 @@ does what is required in a basic POC, perhaps similar to POC-Turtle and POC-Engl
 but starting from a given grammar instead of arbitrary sentences. 
 An advantage of generating a grammar this way is that we can get an 
 arbitrary number of sentences from it, so building large lexical
-corpora from it is easier than crafting them by hand.
+corpora from it is much easier than crafting them by hand.
 
 The first tested gramar is in simple_grammar0.txt and consists of 6 grammatical classes
 (2 related to nouns, 1 to verbs, 1 to adjectives, 1 to adverbs and 1 to determiners).
