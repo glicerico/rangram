@@ -80,11 +80,18 @@ def GenerateCorpus(grammar_mode: str, corpus_size: int, outfile: str, input_gram
     """
 
     grammar = GrammarSampler(input_grammar)
+    sentences = set(); # keeps unique sentences
 
-    with open(outfile, 'w') as fo:
-        for counter in range(0, corpus_size):
-            parse = grammar.GenerateParse()
-            fo.write(parse)
+    with open(outfile, 'w') as fcorpus:
+        with open(outfile + ".ull", 'w') as fparses:
+            for counter in range(0, corpus_size):
+                sentence, parse = grammar.GenerateParse()
+                if sentence not in sentences:
+                    sentences.add(sentence)
+                    fcorpus.write(sentence + '\n\n')
+                    fparses.write(sentence + '\n')
+                    fparses.write(parse + '\n\n')
+    print(f"Generated {len(sentences)} unique sentences, out of {corpus_size} requested\n")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
