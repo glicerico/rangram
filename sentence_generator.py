@@ -12,7 +12,7 @@ import re
 
 class GrammarSampler(object):
     """
-    Class to generate a random corpus from a given grammar
+    Class to generate a random sentence and parse from a given grammar
     """
     def __init__(self, grammar_file):
         """
@@ -67,7 +67,7 @@ class GrammarSampler(object):
     def GenerateParse(self):
         """
         MAIN ENTRY POINT
-        Generate a lexical tree and return its corresponding sentence
+        Generate a lexical tree and return its corresponding sentence and parse
         """
         # Reset global variables
         self.counter = 0
@@ -98,10 +98,10 @@ class GrammarSampler(object):
         # Concatenate parse text output
         self.sentence = " ".join(sentence_array)
         self.ullLinks.sort()
-        self.ullParse = f"{self.sentence}\n" + "\n".join(self.ullLinks) + "\n\n"
-        print(f"ULL parse: \n{self.ullParse}")
+        sortedLinks = "\n".join(self.ullLinks)
+        print(f"ULL parse: \n{self.sentence}\n{sortedLinks}\n")
 
-        return self.ullParse
+        return self.sentence, sortedLinks
         
     def ReturnPos(self, word_string):
         """
