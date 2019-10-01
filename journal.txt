@@ -1,4 +1,4 @@
-#########################################################################
+################################################
 Aug-2019; ASuMa
 
 The current repo is an attempt to test the ULL pipeline, and some of its components,
@@ -25,12 +25,12 @@ An advantage of generating a grammar this way is that we can get an
 arbitrary number of sentences from it, so building large lexical
 corpora from it is much easier than crafting them by hand.
 
-The first tested gramar is in rangram0.grammar and consists of 6 grammatical classes
+The first tested gramar is in data/rangram0.grammar and consists of 6 grammatical classes
 (2 related to nouns, 1 to verbs, 1 to adjectives, 1 to adverbs and 1 to determiners).
 Each class has only one possible word and disjuncts are created having in mind the
 English language rules; no Zipfian distributions are expected in the resulting corpus.
 
-First corpora generated in workdir are of size 5, 10, 50, 100, 200 and 500 sentences.
+First corpora generated in workdir are of size 5, 10, 50, 100, 200, 500 and 1000 sentences.
 For each corpus, only a subset of the sentences are unique. The following lists the nbr
 of unique sentences per corpus size in this experiment:
 
@@ -41,4 +41,16 @@ SIZE  	UNIQUE SENTS
 100		48
 200		68
 500		75
+1000	77
+
+################################################
+Sept-2019 ASuMa
+
+Grammar Learner tests with simple rangram0.grammar and ILE were successful: grammar was learned perfectly (as evaluated by parse-evaluator F1 score) from the 5-sentence corpus. First proof of concept.
+Running grammar-learner + parse-evaluator as
+> language-learning/pipeline/ppln.py rangram0_ILE.json
+Results in 
+> langauge-learning/output/rangram0/5sent/
+
+
 
