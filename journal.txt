@@ -46,11 +46,39 @@ SIZE  	UNIQUE SENTS
 ################################################
 Sept-2019 ASuMa
 
-Grammar Learner tests with simple rangram0.grammar and ILE were successful: grammar was learned perfectly (as evaluated by parse-evaluator F1 score) from the 5-sentence corpus. First proof of concept.
+Grammar Learner (GL) tests with simple rangram0.grammar and ILE were successful: grammar was learned perfectly (as evaluated by parse-evaluator F1 score) from the 5-sentence corpus. First proof of concept.
 Running grammar-learner + parse-evaluator as
-> language-learning/pipeline/ppln.py rangram0_ILE.json
+> language-learning/pipeline/ppln.py rangram0_5s_ILE.json
 Results in 
 > langauge-learning/output/rangram0/5sent/
 
+##################
+GL ILE test with 77-sentence corpus (77 unique sentences possible, obtained from 1000 sentence rangram corpus generator):
+
+Running grammar-learner + parse-evaluator as
+> language-learning/pipeline/ppln.py rangram0_77s_ILE.json
+Results in 
+> langauge-learning/output/rangram0/77s_ILE/
+
+F1 score = 95.17%
+The errors are all coming from the association of "red" and "the" with both "kids" and "turtle", which is probably a bad design of this grammar, and also the grammar generator doesn't create a perfect corpus for this. It creates parses like:
+
+the kids eat turtles
+1 the 4 turtles
+2 kids 3 eat
+3 eat 4 turtles
+
+which are correct according to the grammar, but feel weird in English.
+
+######################
+
+GL ILE test with 77-sentence corpus:
+
+Running grammar-learner + parse-evaluator as
+> language-learning/pipeline/ppln.py rangram0_77s_ALE.json
+Results in 
+> langauge-learning/output/rangram0/77s_ALE/
+
+F1 score = 97.4%
 
 
