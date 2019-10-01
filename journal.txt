@@ -25,7 +25,7 @@ An advantage of generating a grammar this way is that we can get an
 arbitrary number of sentences from it, so building large lexical
 corpora from it is much easier than crafting them by hand.
 
-The first tested gramar is in simple_grammar0.txt and consists of 6 grammatical classes
+The first tested gramar is in rangram0.grammar and consists of 6 grammatical classes
 (2 related to nouns, 1 to verbs, 1 to adjectives, 1 to adverbs and 1 to determiners).
 Each class has only one possible word and disjuncts are created having in mind the
 English language rules; no Zipfian distributions are expected in the resulting corpus.
