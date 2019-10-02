@@ -98,5 +98,12 @@ can be evaluated by SingNet's parse-evaluator:
 - SP + GL: Grammar learned from parses by SP
 - ULLP + GL: Grammar learned from parses by ULLP
 
+For the SP, we currently explore two parameters: the size of the observation window for pair-counting (winObserve) and the size of the parsing window for parsing (winParse).
+Currently, there is no implemented weighting related with distance for word-pairs counting.
+
+By using the [stream_evaluate](https://github.com/glicerico/stream-parser/blob/master/src/scripts/stream_evaluate.sh) script, we evaluate the complete rangram0 (77 sentences) with SP, using a range of values for winObserve and winParse. 
+The following colormap summarizes F1 scores: 
+![F1 scores for rangram0 processed with SP]
+
 
 
