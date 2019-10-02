@@ -102,8 +102,16 @@ For the SP, we currently explore two parameters: the size of the observation win
 Currently, there is no implemented weighting related with distance for word-pairs counting.
 
 By using the [stream_evaluate](https://github.com/glicerico/stream-parser/blob/master/src/scripts/stream_evaluate.sh) script, we evaluate the complete rangram0 (77 sentences) with SP, using a range of values for winObserve and winParse. 
+The parse evaluation is done against the gold standard (GS) that rangram provides for the corpus.
 The following colormap summarizes F1 scores: 
 ![F1 scores for rangram0 processed with SP](results/plots/rangram0_77s_f1score.png)
 
+The scores obtained range from 38.12% to 56.27%, the higher ones corresponding to the lowest values of both parameters (highest value is for `winObserve=1`, `winParse=1`)
+It's interesting to note that `winObserve=1` represents sequential parses, but given that the stream-parser only links words with `PMI>0`, the sequential parses may not be covering the complete sentence.
 
+As a baseline for comparison, a full sequential parse scores 58.42%, while the average score for random parsing this corpus is 46.6%.
+Stream-parser gets close to the sequential baseline, but cannot improve it.
+This is expected, seeing that the highest score is coming from incomplete sequential parses.
 
+Most importantly, this should be seen as an exercise to test the parsing and evaluation pipelines, not as an evaluation of their capabilities.
+This comes from the fact that such a limited grammar can hardly provide meaningful mutual information measures that could be leveraged by the parses that rely on these.
