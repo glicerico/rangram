@@ -28,7 +28,7 @@ learner](https://github.com/singnet/language-learning) does what is required in 
 An advantage of generating a grammar this way is that we can get an arbitrary number of sentences from it, so building large lexical corpora from it is much easier than crafting them by hand.
 Equally important, we also get a Gold Standard to evaluate the processing methods.
 
-#############################################
+***************************
 
 The first tested gramar is in data/rangram0.grammar and consists of 6 grammatical classes
 (2 related to nouns, 1 to verbs, 1 to adjectives, 1 to adverbs and 1 to determiners).
@@ -47,9 +47,10 @@ SIZE  	UNIQUE SENTS
 100		48
 200		68
 500		75
-1000	77
+1000		77
 ```
 
+****************************
 ## Sept-2019; ASuMa
 
 Grammar Learner (GL) tests with simple rangram0.grammar and ILE were successful: grammar was learned perfectly (as evaluated by parse-evaluator F1 score) from the 5-sentence corpus. First proof of concept.
@@ -59,7 +60,7 @@ Running grammar-learner + parse-evaluator as
 Results in 
 > langauge-learning/output/rangram0/5sent/
 
-##################
+***************************
 
 GL ILE test with 77-sentence rangram0 corpus (77 unique sentences possible, obtained from 1000 sentence rangram corpus generator):
 
@@ -82,7 +83,7 @@ the kids eat turtles
 
 which are correct according to the grammar, but feel weird in English.
 
-######################
+***************************
 
 GL ILE test with 77-sentence rangram0 corpus:
 
@@ -117,7 +118,7 @@ Guided by experiments performed with the [ULLP](https://docs.google.com/spreadsh
 
 For the GL, we experiment with both the ILE and ALE methods. The bulk of the parameters can be found in the respective json files of the experiments.
 
-#############################
+***************************
 
 We first evaluate the complete rangram0 (77 sentences) with SP for winObserve and winParse up to 10.
 The parse evaluation is done against the gold standard (GS) that rangram provides for the corpus.
@@ -134,7 +135,7 @@ This is expected, seeing that the highest score is coming from incomplete sequen
 Most importantly, this should be seen as an exercise to test the parsing and evaluation pipelines, not as an evaluation of their capabilities.
 This comes from the fact that such a limited grammar can hardly provide meaningful mutual information measures that could be leveraged by the parses that rely on these.
 
-##########################
+***************************
 
 Processing rangram0 with the ULLP, we obtain the following f1-scores:
 - win6-odist		54.54%
@@ -142,22 +143,30 @@ Processing rangram0 with the ULLP, we obtain the following f1-scores:
 - LG-24				56.31%
 - win6-omdist(4321)	54.54%
 
-##########################
+***************************
 
 Feeding the best results of SP to GL, we get:
 
-best SP + GL ALE: 56.92%
-best SP + GL ILE: 56.33%
+- best SP + GL ALE: 56.92%
+- best SP + GL ILE: 56.33%
 
 In both cases, F1 score was slightly better than its input (56.27%)
 
-##########################
+***************************
 
 Finally, feeding the best ULLP result to GL, we get:
 
-best ULLP + GL ALE: 54.4%
-best ULLP + GL ILE: 55.2%
+- best ULLP + GL ALE: 54.4%
+- best ULLP + GL ILE: 55.2%
 
+In this cases, F1 is slightly worse than its input (56.31%).
 
+***************************
 
+In summary, the best result for each method are shown in the following table:
+
+F1 score [%]
+|          | SP    | ULLP  | GL   | SP + GL | ULLP + GL |
+|----------|-------|-------|------|---------|-----------|
+|rangram0  | 56.27 | 56.31 | 97.4 |56.92    | 55.2      |
 
