@@ -166,6 +166,7 @@ In this cases, F1 is slightly worse than its input (56.31%).
 In summary, the best result for each method are shown in the following table:
 
 F1 score [%]
+
 |          | SP    | ULLP  | GL   | SP + GL | ULLP + GL |
 |----------|-------|-------|------|---------|-----------|
 |rangram0  | 56.27 | 56.31 | 97.4 |56.92    | 55.2      |
