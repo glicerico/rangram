@@ -141,3 +141,23 @@ Processing rangram0 with the ULLP, we obtain the following f1-scores:
 - LG-any			54.34%
 - LG-24				56.31%
 - win6-omdist(4321)	54.54%
+
+##########################
+
+Feeding the best results of SP to GL, we get:
+
+best SP + GL ALE: 56.92%
+best SP + GL ILE: 56.33%
+
+In both cases, F1 score was slightly better than its input (56.27%)
+
+##########################
+
+Finally, feeding the best ULLP result to GL, we get:
+
+best ULLP + GL ALE: 54.4%
+best ULLP + GL ILE: 55.2%
+
+
+
+
