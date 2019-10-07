@@ -16,9 +16,6 @@ rangram_workdir="$HOME/Documents/ULL_project/rangram_workdir/"
 
 workdir_path=$rangram_workdir$gram_name
 
-# TODO: Abort if ULL conda environment has not been activated
-# TODO: conda activate ull
-
 cd $workdir_path
 
 # Create local copy of workdir
@@ -36,5 +33,12 @@ cp ../corpus/* gamma-pages/
 ./reset_database.sh $db_name
 
 # Parse using ULLP and evaluate
+#rm -r mst-parses mi-pairs.txt
 # TODO: Start cogserver and send "one-go" to it.
+
+source activate ull
+parse-evaluator -i -r ../GS -t mst-parses
+
+mkdir -p stats
+mv *.stat stats
 
