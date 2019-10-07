@@ -4,25 +4,6 @@
 
 The current repo is an attempt to test different components of the ULL pipeline on a number of grammars.
 
-The `src` folder contains the code used to generate random grammars, as well as corpora from them.
-This folder includes:
-
-+ grammar_generator.py creates a random grammar given a set of parameters.
-
-We will experiment with randomly created grammars, which follow a number of parameters,
-specified in the header of file of such a grammar:
-```
-% RANDOM GRAMMAR with parameters:
-% num_words = 20
-% num_classes = 4
-% num_class_connectors = 7
-% connectors_limit = 2
-```
-
-+ sentence_generator.py generates random sentences using a specified grammar.
-
-+ corpus_generator.py uses the previously mentioned files to generate a random corpus.
-
 First we use very simple hand-coded grammars as a sanity test to make sure the [ULL grammar
 learner](https://github.com/singnet/language-learning) does what is required in a basic POC, perhaps similar to POC-Turtle and POC-English, but starting from a given grammar instead of arbitrary sentences. 
 An advantage of generating a grammar this way is that we can get an arbitrary number of sentences from it, so building large lexical corpora from it is much easier than crafting them by hand.
@@ -49,6 +30,8 @@ SIZE  	UNIQUE SENTS
 500		75
 1000		77
 ```
+Increasing the size and repeating the random generation didn't increase the number of unique sentences.
+We assume 77 is the number of possible sentences that the grammar allows.
 
 ****************************
 ## Sept-2019; ASuMa
@@ -103,8 +86,8 @@ can be evaluated by SingNet's parse-evaluator:
 - Stream-parser (SP): https://github.com/glicerico/stream-parser
 - OpenCog/SingNet's ULL pipeline parser (ULLP): https://github.com/singnet/learn/
 - SingNet's Grammar Learner (GL): https://github.com/singnet/language-learning/
-- SP + GL: Grammar learned from parses by SP
-- ULLP + GL: Grammar learned from parses by ULLP
+- SP + GL: Parsing with the grammar learned from parses by SP
+- ULLP + GL: Parsing with the grammar learned from parses by ULLP
 
 We use two baselines as a reference:
 - random parses: a random planar tree that connects all words in the sentence (no crossings, no loops).
@@ -114,7 +97,7 @@ For the SP, we currently explore two parameters: the size of the observation win
 Currently, there is no implemented weighting related with distance for word-pairs counting.
 By using the [stream_evaluate](https://github.com/glicerico/stream-parser/blob/master/src/scripts/stream_evaluate.sh) script, we can use a range of values for winObserve and winParse easily.
 
-Guided by experiments performed with the [ULLP](https://docs.google.com/spreadsheets/d/1TPbtGrqZ7saUHhOIi5yYmQ9c-cvVlAGqY14ATMPVCq4/edit#gid=963717716), we focus our attention to its window-based method (win=6) with distance weight for calculating PMI, and no distance-weight when MST-parsing.
+Guided by experiments performed with the [ULLP](https://docs.google.com/spreadsheets/d/1TPbtGrqZ7saUHhOIi5yYmQ9c-cvVlAGqY14ATMPVCq4/edit#gid=963717716) in other corpora, we focus our attention to its window-based method (win=6) with distance weight for calculating PMI, and no distance-weight when MST-parsing.
 
 For the GL, we experiment with both the ILE and ALE methods. The bulk of the parameters can be found in the respective json files of the experiments.
 
@@ -172,3 +155,5 @@ F1 score [%]
 |rangram0|56.27|56.31|97.4 |56.92|55.2   |
 
 ************************************
+
+
