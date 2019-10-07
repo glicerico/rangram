@@ -167,7 +167,8 @@ In summary, the best result for each method are shown in the following table:
 
 F1 score [%]
 
-|          | SP    | ULLP  | GL   | SP + GL | ULLP + GL |
-|----------|-------|-------|------|---------|-----------|
-|rangram0  | 56.27 | 56.31 | 97.4 |56.92    | 55.2      |
+|        | SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|-----|-----|-----|-----|-------|
+|rangram0|56.27|56.31|97.4 |56.92|55.2   |
 
+************************************
