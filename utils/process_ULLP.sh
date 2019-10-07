@@ -7,32 +7,34 @@
 # Parameters
 gram_name=$1
 db_name=$2 # psql db to use
-obs_method="any"
-cnt_reach=24
+cnt_mode="clique-dist"
+cnt_reach=6
 
-ULL_workdir="~/Documents/ULL_project/minimal_workdir"
-
-# TODO
-# replace params above in config/params.txt
-
-rangram_workdir="/home/andres/Documents/ULL_project/rangram_workdir/"
+HOME="/home/andres"
+ULL_workdir="$HOME/Documents/ULL_project/minimal_workdir"
+rangram_workdir="$HOME/Documents/ULL_project/rangram_workdir/"
 
 workdir_path=$rangram_workdir$gram_name
 
-# TODO: Abort if ULL conda environment has not been acivated
+# TODO: Abort if ULL conda environment has not been activated
 # TODO: conda activate ull
 
 cd $workdir_path
 
-# Parse using ULLP and evaluate
+# Create local copy of workdir
 mkdir -p ULL-parser
 cd ULL-parser
 cp -r $ULL_workdir/* .
-cp ../corpus/* beta-pages
-cp ../corpus/* gamma-pages
+
+# Replace params above in config/params.txt
+sed -i -e "s/cnt_mode\S*/cnt_mode=\"${cnt_mode}\"/" config/params.txt
+sed -i -e "s/cnt_reach\S*/cnt_reach=${cnt_reach}/" config/params.txt
+
+cp ../corpus/* beta-pages/
+cp ../corpus/* gamma-pages/
 
 ./reset_database.sh $db_name
 
-# Start cogserver and send "one-go" to it.
-
+# Parse using ULLP and evaluate
+# TODO: Start cogserver and send "one-go" to it.
 
