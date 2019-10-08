@@ -4,6 +4,12 @@
 
 # Usage process_ULLP.sh <grammar_name> <db_name>
 
+if [ $# -lt 2 ]
+then
+  echo "Usage: ./process_ULLP.sh <gram_name> <db_name>"
+  exit 0
+fi
+
 # Parameters
 gram_name=$1
 db_name=$2 # psql db to use
@@ -14,7 +20,7 @@ HOME="/home/andres"
 ULL_workdir="$HOME/Documents/ULL_project/minimal_workdir"
 rangram_workdir="$HOME/Documents/ULL_project/rangram_workdir/"
 
-workdir_path=$rangram_workdir$gram_name
+workdir_path=$rangram_workdir/$gram_name
 
 cd $workdir_path
 
@@ -31,14 +37,19 @@ cp ../corpus/* beta-pages/
 cp ../corpus/* gamma-pages/
 
 ./reset_database.sh $db_name
+rm -r mst-parses mi-pairs.txt
 
 # Parse using ULLP and evaluate
-#rm -r mst-parses mi-pairs.txt
 # TODO: Start cogserver and send "one-go" to it.
+byobu new-session -d -n 'cogsrv' "nice guile -l launch-cogserver.scm -- --mode pairs --lang en --db $db_name; $SHELL"
+echo "Waiting for launch-cogserver.sh to compile..."
+sleep 10
+tmux new-window -n 'processing' "./one-go.sh; tmux kill-session"
+tmux attach
+echo "Parsing finished!"
 
 source activate ull
 parse-evaluator -i -r ../GS -t mst-parses
-
 mkdir -p stats
 mv *.stat stats
-
+echo "*.stat files are located in the stats folder"
