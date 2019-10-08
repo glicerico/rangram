@@ -41,15 +41,9 @@ rm -r mst-parses mi-pairs.txt
 
 # Parse using ULLP and evaluate
 # TODO: Start cogserver and send "one-go" to it.
-byobu new-session -d -n 'cogsrv' "nice guile -l launch-cogserver.scm -- --mode pairs --lang en --db $db_name; $SHELL"
+byobu new-session -d -s 'ULLP' -n 'cogsrv' "nice guile -l launch-cogserver.scm -- --mode pairs --lang en --db $db_name; $SHELL"
 echo "Waiting for launch-cogserver.sh to compile..."
 sleep 10
-tmux new-window -n 'processing' "./one-go.sh; tmux kill-session"
+tmux new-window -n 'processing' "./one-go.sh; source activate ull; parse-evaluator -i -r ../GS -t mst-parses; mkdir -p stats; mv *.stat stats; tmux kill-session -t 'ULLP'"
 tmux attach
-echo "Parsing finished!"
-
-source activate ull
-parse-evaluator -i -r ../GS -t mst-parses
-mkdir -p stats
-mv *.stat stats
 echo "*.stat files are located in the stats folder"
