@@ -1,0 +1,18 @@
+{
+  "corpus": "tmp",
+  "dataset": "tmp",
+  "reference": "/data/tmp",
+  "out_path": "/output/tmp",
+  "context": 2,
+  "min_word_count": 1,
+  "word_space": "sparse",
+  "clustering": "agglomerative",
+  "clustering_metric": ["silhouette", "cosine"],
+  "cluster_range": 50,
+  "top_level": 0.01,
+  "grammar_rules": 2,
+  "rules_generalization": "none",
+  "tmpath": "/tmp",
+  "verbose": "min",
+  "linkage_limit": 1000
+}
