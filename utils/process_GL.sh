@@ -2,7 +2,7 @@
 
 # Learns a given grammar with Grammar-Learner and evaluates the results:
 
-# Usage process_GL.sh <grammar_name>
+# Usage process_GL.sh <grammar_name> <input_parses>
 
 # Parameters
 gram_name=$1
@@ -16,7 +16,8 @@ ULL_path="$HOME/MyOpenCogSources/language-learning/"
 workdir_path=$rangram_workdir/$gram_name
 
 # Copy input parses to learn grammar from
-cp -r $workdir_path/$input_parses $ULL_path/data/tmp/
+mkdir -p $ULL_path/data/tmp
+cp -r $workdir_path/$input_parses $ULL_path/data/tmp/tmp
 
 # Learn grammar with GL and evaluate
 source activate ull
