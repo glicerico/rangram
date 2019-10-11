@@ -17,7 +17,7 @@ workdir_path=$rangram_workdir/$gram_name
 
 # Copy input parses to learn grammar from
 mkdir -p $ULL_path/data/tmp
-cp -r $workdir_path/$input_parses $ULL_path/data/tmp/tmp
+cp -r $workdir_path/$input_parses $ULL_path/data/tmp/tmp # TODO: need better route than this?
 
 # Learn grammar with GL and evaluate
 source activate ull
