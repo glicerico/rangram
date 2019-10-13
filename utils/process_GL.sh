@@ -15,19 +15,21 @@ ULL_path="$HOME/MyOpenCogSources/language-learning/"
 
 workdir_path=$rangram_workdir/$gram_name
 
-# Copy input parses to learn grammar from
-mkdir -p $ULL_path/data/tmp
-cp -r $workdir_path/$input_parses $ULL_path/data/tmp/tmp # TODO: need better route than this?
+# Create GL directory
+mkdir -p $workdir_path/GL/
+cd $workdir_path/GL
+
+json_filename=${gram_name}-GL-GT-DB.json
+cp $rangram_path/templates/template-GL-GT-DB.json $json_filename
+# Replace params above in template for GL
+sed -i -e "s/file_path.*/file_path\": \"%ROOT\/results.dat\",/" ${json_filename}
+sed -i -e "s/PARSES\".*/PARSES\": \"%ROOT\/..\/${input_parses}\",/" ${json_filename}
+sed -i -e "s/parsing\": \"\"/parsing\": \"%ROOT\/..\/${input_parses}\"/g" $json_filename
+sed -i -e "s/input_corpus.*/input_corpus\": \"%ROOT\/..\/${input_parses}\",/" ${json_filename}
+sed -i -e "s/ref_path.*/ref_path\": \"%ROOT\/..\/${input_parses}\",/" ${json_filename}
+sed -i -e "s/grammar_root.*/grammar_root\": \"%ROOT\",/" ${json_filename}
 
 # Learn grammar with GL and evaluate
 source activate ull
-cd $ULL_path/pipeline
-python ppln.py $rangram_path/templates/tmp.json
-
-mv $ULL_path/output/tmp/ $workdir_path/GL
-
-#cd $workdir_path/GL
-#cp $rangram_path/templates/tmp.json ./${gram_name}_ALE.json
-
-# Add current params to json file
+ull-cli -C ${json_filename}
 
