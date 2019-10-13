@@ -23,8 +23,8 @@ json_filename=${gram_name}-GL-GT-DB.json
 cp $rangram_path/templates/template-GL-GT-DB.json $json_filename
 # Replace params above in template for GL
 sed -i -e "s/file_path.*/file_path\": \"%ROOT\/results.dat\",/" ${json_filename}
-sed -i -e "s/PARSES\".*/PARSES\": \"%ROOT\/..\/${input_parses}\",/" ${json_filename}
-sed -i -e "s/parsing\": \"\"/parsing\": \"%ROOT\/..\/${input_parses}\"/g" $json_filename
+sed -i -e "s/PARSES\".*/PARSES\": \"%ROOT\/..\",/" ${json_filename}
+sed -i -e "s/parsing\": \"\"/parsing\": \"${input_parses}\"/g" $json_filename
 sed -i -e "s/input_corpus.*/input_corpus\": \"%ROOT\/..\/${input_parses}\",/" ${json_filename}
 sed -i -e "s/ref_path.*/ref_path\": \"%ROOT\/..\/${input_parses}\",/" ${json_filename}
 sed -i -e "s/grammar_root.*/grammar_root\": \"%ROOT\",/" ${json_filename}
