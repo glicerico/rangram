@@ -15,7 +15,7 @@
             {"title": "LW"},
             {"title": "Period"},
             {"title": "dILEd"},
-            {"title": "dILEd"}
+            {"title": "dILEd"},
             {"title": "dALEd"},
             {"title": "dALEd"}
           ]
@@ -50,6 +50,7 @@
     "common-parameters": {
     	"inherit_prev_path": true,
     	"input_grammar": "%PREV",
+      "ull_input": true,
     	"input_corpus": "",
       "ref_path": "",
     	"output_path": "%PREV",
