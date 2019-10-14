@@ -16,7 +16,8 @@ ULL_path="$HOME/MyOpenCogSources/language-learning/"
 workdir_path=$rangram_workdir/$gram_name
 
 # Create GL directory
-mkdir -p $workdir_path/GL/
+rm -r $workdir_path/GL
+mkdir $workdir_path/GL/
 cd $workdir_path/GL
 
 json_filename=${gram_name}-GL-GT-DB.json
