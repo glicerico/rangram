@@ -4,6 +4,12 @@
 
 # Usage process_SP.sh <grammar_name> <maxWinObserve> <maxWinParse>
 
+if [ $# -lt 3 ]
+then
+  echo "Usage: ./process_SP.sh <grammar_name> <maxWinObserve> <maxWinParse>"
+  exit 0
+fi
+
 # Parameters
 gram_name=$1
 maxWinObserve=$2
@@ -25,3 +31,8 @@ $SPPath/dictionary_dir.sh ../corpus $vocab_filename
 
 # Parse using SP and evaluate
 $SPPath/stream_evaluate.sh $vocab_filename ../corpus ../corpus ../GS $maxWinObserve $maxWinParse
+
+# Append SP results to all_results file
+printf "Stream-parser results:\n\n" >> ../all_results.txt
+cat results.dat >> ../all_results.txt
+printf "#################### \n\n" >> ../all_results.txt
