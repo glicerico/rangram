@@ -4,6 +4,12 @@
 
 # Usage process_GL.sh <grammar_name> <input_parses>
 
+if [ $# -lt 2 ]
+then
+  echo "Usage: ./process_GL.sh <gram_name> <input_parses>"
+  exit 0
+fi
+
 # Parameters
 gram_name=$1
 input_parses=$2
@@ -16,9 +22,9 @@ ULL_path="$HOME/MyOpenCogSources/language-learning/"
 workdir_path=$rangram_workdir/$gram_name
 
 # Create GL directory
-rm -r $workdir_path/GL
-mkdir $workdir_path/GL/
-cd $workdir_path/GL
+rm -r $workdir_path/grammar-learner
+mkdir $workdir_path/grammar-learner
+cd $workdir_path/grammar-learner
 
 json_filename=${gram_name}-GL-GT-DB.json
 cp $rangram_path/templates/template-GL-GT-DB.json $json_filename

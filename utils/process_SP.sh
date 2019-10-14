@@ -4,6 +4,12 @@
 
 # Usage process_SP.sh <grammar_name> <maxWinObserve> <maxWinParse>
 
+if [ $# -lt 3 ]
+then
+  echo "Usage: ./process_SP.sh <grammar_name> <maxWinObserve> <maxWinParse>"
+  exit 0
+fi
+
 # Parameters
 gram_name=$1
 maxWinObserve=$2

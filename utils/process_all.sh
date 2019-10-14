@@ -9,30 +9,19 @@
 
 # Parameters
 gram_name=$1
-maxWinObserve=2
-maxWinParse=2
+maxWinObserve=10
+maxWinParse=10
+db_name=test
 
-rangram_workdir="/home/andres/Documents/ULL_project/rangram_workdir/"
-SPPath="/home/andres/IdeaProjects/stream-parser/src/scripts/"
+HOME=/home/andres
+utils_dir="$HOME/various_repos/rangram/utils/"
 
-workdir_path=$rangram_workdir$gram_name
-vocab_filename=$gram_name.vocab
+# Process with different methods
+echo "Parsing corpus with stream parser, with parameters:\n maxWinObserve: $maxWinObserve; maxWinParse: $maxWinParse"
+$utils_dir/process_SP.sh $gram_name $maxWinObserve $maxWinParse
+echo "Parsing corpus with ULL parser, using database $db_name"
+$utils_dir/process_ULLP.sh $gram_name db_name
+echo "Learning grammar with Grammar Learner, using GS parses"
+$utils_dir/process_GL.sh $gram_name GS
 
-# Abort if ULL conda environment has not been acivated
-
-
-cd $workdir_path
-
-# Parse using SP and evaluate
-mkdir -p stream-parser
-cd stream-parser
-
-# Create vocabulary file
-$SPPath/dictionary_dir.sh ../corpus $vocab_filename
-
-# TODO: conda activate ull
-
-$SPPath/stream_evaluate.sh $vocab_filename ../corpus ../corpus ../GS $maxWinObserve $maxWinParse
-
-
-
+echo "Finished processing. Results available in their respective folders in:\n$HOME/Documents/ULL_project/rangram_workdir/$gram_name"
