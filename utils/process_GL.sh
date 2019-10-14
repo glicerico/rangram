@@ -41,6 +41,6 @@ source activate ull
 ull-cli -C ${json_filename}
 
 # Append GL results to all_results file
-echo "Grammar-learner results:" >> all_results.txt
+printf "Grammar-learner results:\n\n" >> ../all_results.txt
 cat results.dat >> ../all_results.txt
-echo "" >> ../all_results.txt
+printf "#################### \n\n" >> ../all_results.txt

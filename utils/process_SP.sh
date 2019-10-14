@@ -33,6 +33,6 @@ $SPPath/dictionary_dir.sh ../corpus $vocab_filename
 $SPPath/stream_evaluate.sh $vocab_filename ../corpus ../corpus ../GS $maxWinObserve $maxWinParse
 
 # Append SP results to all_results file
-echo "Stream-parser results:" >> all_results.txt
+printf "Stream-parser results:\n\n" >> ../all_results.txt
 cat results.dat >> ../all_results.txt
-echo "" >> ../all_results.txt
+printf "#################### \n\n" >> ../all_results.txt

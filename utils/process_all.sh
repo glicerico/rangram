@@ -15,16 +15,17 @@ db_name=test
 
 HOME=/home/andres
 utils_dir="$HOME/various_repos/rangram/utils/"
+workdir_path=$rangram_workdir/$gram_name
 
 # Reset all_results file
-echo "" > all_results.txt
+truncate -s 0 ${workdir_path}/all_results.txt
 
 # Process with different methods
-echo "Parsing corpus with stream parser, with parameters:\n maxWinObserve: $maxWinObserve; maxWinParse: $maxWinParse"
+printf "Parsing corpus with stream parser, with parameters:\n maxWinObserve: $maxWinObserve; maxWinParse: $maxWinParse\n"
 $utils_dir/process_SP.sh $gram_name $maxWinObserve $maxWinParse
-echo "Parsing corpus with ULL parser, using database $db_name"
+printf "Parsing corpus with ULL parser, using database $db_name\n"
 $utils_dir/process_ULLP.sh $gram_name db_name
-echo "Learning grammar with Grammar Learner, using GS parses"
+printf "Learning grammar with Grammar Learner, using GS parses\n"
 $utils_dir/process_GL.sh $gram_name GS
 
-echo "Finished processing. Results available in their respective folders in:\n$HOME/Documents/ULL_project/rangram_workdir/$gram_name"
+printf "Finished processing. Results available in their respective folders in:\n$HOME/Documents/ULL_project/rangram_workdir/$gram_name \n"

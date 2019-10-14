@@ -49,6 +49,6 @@ tmux attach
 echo "Results stored in *.stat file"
 
 # Append SP results to all_results file
-echo "ULL parser results:" >> all_results.txt
+printf "ULL parser results:\n\n" >> ../all_results.txt
 cat *.stat >> ../all_results.txt
-echo "" >> ../all_results.txt
+printf "#################### \n\n" >> ../all_results.txt
