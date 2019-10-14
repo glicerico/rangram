@@ -15,8 +15,8 @@
             {"title": "LW"},
             {"title": "Period"},
             {"title": "dILEd"},
-            {"title": "dILEd"},
             {"title": "dALEd"},
+            {"title": "dILEd"},
             {"title": "dALEd"}
           ]
         ]
@@ -42,7 +42,7 @@
     },
     "specific-parameters": [
       { "space": "Disjuncts-ILE-disjuncts", "parsing": "", "input_parses": "%PARSES/%parsing", "db_row": "1", "pa_col": "3", "f1_col": "5", "left_wall": "LW", "period": true, "grammar_rules": 2, "context": 2, "word_space": "discrete", "clustering": "group" },
-      { "space": "Disjuncts-ALE-disjuncts", "parsing": "", "input_parses": "%PARSES/%parsing", "db_row": "2", "pa_col": "4", "f1_col": "6", "left_wall": "LW", "period": true, "grammar_rules": 2, "context": 2, "word_space": "sparse", "clustering": ["agglomerative", "ward"] }
+      { "space": "Disjuncts-ALE-disjuncts", "parsing": "", "input_parses": "%PARSES/%parsing", "db_row": "1", "pa_col": "4", "f1_col": "6", "left_wall": "LW", "period": true, "grammar_rules": 2, "context": 2, "word_space": "sparse", "clustering": ["agglomerative", "ward"] }
     ]
   },
   {
