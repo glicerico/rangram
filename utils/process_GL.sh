@@ -40,3 +40,7 @@ sed -i -e "s/grammar_root.*/grammar_root\": \"%ROOT\",/" ${json_filename}
 source activate ull
 ull-cli -C ${json_filename}
 
+# Append GL results to all_results file
+echo "Grammar-learner results:" >> all_results.txt
+cat results.dat >> ../all_results.txt
+echo "" >> ../all_results.txt

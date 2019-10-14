@@ -16,6 +16,9 @@ db_name=test
 HOME=/home/andres
 utils_dir="$HOME/various_repos/rangram/utils/"
 
+# Reset all_results file
+echo "" > all_results.txt
+
 # Process with different methods
 echo "Parsing corpus with stream parser, with parameters:\n maxWinObserve: $maxWinObserve; maxWinParse: $maxWinParse"
 $utils_dir/process_SP.sh $gram_name $maxWinObserve $maxWinParse

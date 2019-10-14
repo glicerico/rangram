@@ -44,6 +44,11 @@ rm -r mst-parses mi-pairs.txt
 byobu new-session -d -s 'ULLP' -n 'cogsrv' "nice guile -l launch-cogserver.scm -- --mode pairs --lang en --db $db_name; $SHELL"
 echo "Waiting for launch-cogserver.sh to compile..."
 sleep 10
-tmux new-window -n 'processing' "./one-go.sh; source activate ull; parse-evaluator -i -r ../GS -t mst-parses; mkdir -p stats; mv *.stat stats; tmux kill-session -t 'ULLP'"
+tmux new-window -n 'processing' "./one-go.sh; source activate ull; parse-evaluator -i -r ../GS -t mst-parses; tmux kill-session -t 'ULLP'"
 tmux attach
-echo "*.stat files are located in the stats folder"
+echo "Results stored in *.stat file"
+
+# Append SP results to all_results file
+echo "ULL parser results:" >> all_results.txt
+cat *.stat >> ../all_results.txt
+echo "" >> ../all_results.txt
