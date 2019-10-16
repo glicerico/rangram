@@ -15,16 +15,38 @@ db_name=test
 
 HOME=/home/andres
 utils_dir="$HOME/various_repos/rangram/utils/"
+rangram_workdir="$HOME/Documents/ULL_project/rangram_workdir/"
 workdir_path=$rangram_workdir/$gram_name
 
 # Reset all_results file
-truncate -s 0 ${workdir_path}/all_results.txt
+cd ${workdir_path}
+truncate -s 0 all_results.txt
+
+# Generate sequential and random baselines
+source activate ull
+mkdir -p sequential
+cd sequential
+parse-evaluator -si -r ../GS -t ../GS
+# Append sequential results to all_results file
+printf "Sequential parser results:\n\n" >> ../all_results.txt
+cat *.stat >> ../all_results.txt
+printf "#################### \n\n" >> ../all_results.txt
+cd ..
+
+mkdir -p random
+cd random
+parse-evaluator -zi -r ../GS -t ../GS
+# Append random results to all_results file
+printf "Random parser results:\n\n" >> ../all_results.txt
+cat *.stat >> ../all_results.txt
+printf "#################### \n\n" >> ../all_results.txt
+cd ..
 
 # Process with different methods
 printf "Parsing corpus with stream parser, with parameters:\n maxWinObserve: $maxWinObserve; maxWinParse: $maxWinParse\n"
 $utils_dir/process_SP.sh $gram_name $maxWinObserve $maxWinParse
 printf "Parsing corpus with ULL parser, using database $db_name\n"
-$utils_dir/process_ULLP.sh $gram_name db_name
+$utils_dir/process_ULLP.sh $gram_name db_name 
 printf "Learning grammar with Grammar Learner, using GS parses\n"
 $utils_dir/process_GL.sh $gram_name GS
 

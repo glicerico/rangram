@@ -44,11 +44,12 @@ rm -r mst-parses mi-pairs.txt
 byobu new-session -d -s 'ULLP' -n 'cogsrv' "nice guile -l launch-cogserver.scm -- --mode pairs --lang en --db $db_name; $SHELL"
 echo "Waiting for launch-cogserver.sh to compile..."
 sleep 10
-tmux new-window -n 'processing' "./one-go.sh; source activate ull; parse-evaluator -i -r ../GS -t mst-parses; tmux kill-session -t 'ULLP'"
+tmux new-window -n 'processing' "./one-go.sh; source activate ull; parse-evaluator -i -r ../GS -t mst-parses; printf 'ULL parser results:\n\n' >> ../all_results.txt; cat mst-parses.stat >> ../all_results.txt; printf '################### \n\n' >> ../all_results.txt; tmux kill-session -t 'ULLP'"
 tmux attach
 echo "Results stored in *.stat file"
 
 # Append SP results to all_results file
-printf "ULL parser results:\n\n" >> ../all_results.txt
-cat *.stat >> ../all_results.txt
-printf "#################### \n\n" >> ../all_results.txt
+# NEEDED TO include this commands in tmux new-window to have them executed in right order
+#printf "ULL parser results:\n\n" >> ../all_results.txt
+#cat mst-parses.stat >> ../all_results.txt
+#printf "#################### \n\n" >> ../all_results.txt
