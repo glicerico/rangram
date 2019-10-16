@@ -14,7 +14,7 @@ num_words = 20
 num_classes = 4
 num_class_connectors = 7
 connectors_limit = 2
-outfile = "rand_grammar.txt"
+outfile = "rand.grammar"
 
 def main(argv):
     # Populate grammar classes following a Zipf distribution
@@ -70,6 +70,7 @@ def main(argv):
 
     # Translate grammar to dictionary format
     grammar_text = f"""
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % RANDOM GRAMMAR with parameters:
     % num_words = {num_words}
     % num_classes = {num_classes}
