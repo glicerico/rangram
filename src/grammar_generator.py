@@ -11,9 +11,9 @@ import random as rand
 
 # We start by obtaining the parameters of the grammar
 num_words = 20
-num_classes = 4
-num_class_connectors = 7
-connectors_limit = 2
+num_classes = 8
+num_class_connectors = 20
+connectors_limit = 3
 outfile = "rand.grammar"
 
 def main(argv):

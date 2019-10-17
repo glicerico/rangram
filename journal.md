@@ -160,8 +160,8 @@ Again, this should be seen as an exercise to test the parsing and evaluation pip
 This is probably because such a limited grammar can hardly provide meaningful mutual information measures that could be leveraged by the parses that rely on these.
 ************************************
 
-### Evaluating rangramNull
-Since the parsers are not able to properly parse even rangram0, probably for the reasons just mentioned above, we try with even a simpler grammar: rangramNull.
+### Evaluating rangram1
+Since the parsers are not able to properly parse even rangram0, probably for the reasons just mentioned above, we try with a randomly generated grammar: rangram1.
 
 Following a similar evaluation as above for rangram0, we get the following result summary table:
 
@@ -169,4 +169,4 @@ F1 score [%]
 
 |        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
 |--------|----------|------|-----|-----|-----|-----|-------|
-|rangramNull|58.42     |46.6  |56.27|56.31|97.4 |56.92|55.2   |
+####|rangramNull|58.42     |46.6  |56.27|56.31|97.4 |56.92|55.2   |

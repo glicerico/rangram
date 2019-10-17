@@ -99,7 +99,7 @@ class GrammarSampler(object):
         self.sentence = " ".join(sentence_array)
         self.ullLinks.sort()
         sortedLinks = "\n".join(self.ullLinks)
-        print(f"ULL parse: \n{self.sentence}\n{sortedLinks}\n")
+        #print(f"ULL parse: \n{self.sentence}\n{sortedLinks}\n")
 
         return self.sentence, sortedLinks
         
