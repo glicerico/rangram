@@ -130,7 +130,8 @@ class GrammarSampler(object):
         """
         Chooses a random conjunct from the ones in disjunct that contain connector
         """
-        valid_conjs = [conj for conj in disjunct if connector in conj]  # filters inappropriate connectors
+        # removes conjuncts that don't have connector at beginning or end (this ensures correct word order in sentence)
+        valid_conjs = [conj for conj in disjunct if connector in [conj[0], conj[-1]]]
         return list(rand.choice(valid_conjs))
 
     def GenerateTree(self, node_class=None, connector=()):
