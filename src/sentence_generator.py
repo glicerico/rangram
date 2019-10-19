@@ -23,7 +23,7 @@ class GrammarSampler(object):
         self.disj_dict = {}
         self.word_dict = {}
         self.GrammarParser(grammar_file)
-        self.counter = 0
+        self.counter = 0 # tracks order of words generation
         self.links = {}
         self.sentence = None
         self.flatTree = None
@@ -99,7 +99,7 @@ class GrammarSampler(object):
         self.sentence = " ".join(sentence_array)
         self.ullLinks.sort()
         sortedLinks = "\n".join(self.ullLinks)
-        #print(f"ULL parse: \n{self.sentence}\n{sortedLinks}\n")
+        print(f"ULL parse: \n{self.sentence}\n{sortedLinks}\n")
 
         return self.sentence, sortedLinks
         
