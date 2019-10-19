@@ -10,10 +10,12 @@ import collections
 import random as rand
 import re
 
+
 class GrammarSampler(object):
     """
     Class to generate a random sentence and parse from a given grammar
     """
+
     def __init__(self, grammar_file):
         """
         Initialize class object. Takes:
@@ -23,7 +25,7 @@ class GrammarSampler(object):
         self.disj_dict = {}
         self.word_dict = {}
         self.GrammarParser(grammar_file)
-        self.counter = 0 # tracks order of words generation
+        self.counter = 0  # tracks order of words generation
         self.links = {}
         self.sentence = None
         self.flatTree = None
@@ -43,13 +45,13 @@ class GrammarSampler(object):
         class_num = 0
         rules = {}
         for line in data:
-            line = re.sub(r"[)(\n]", "", line) # remove all parenthesis and newlines
+            line = re.sub(r"[)(\n]", "", line)  # remove all parenthesis and newlines
             if re.search(r"^[^%]*: *$", line):
-                self.word_dict[class_num] = line.split() # parse vocabulary
-                self.word_dict[class_num][-1] = self.word_dict[class_num][-1].rstrip(':') # remove final ":"
+                self.word_dict[class_num] = line.split()  # parse vocabulary
+                self.word_dict[class_num][-1] = self.word_dict[class_num][-1].rstrip(':')  # remove final ":"
             elif re.search(r"^[^%]*; *$", line):
                 rules[class_num] = line.split(" or ")
-                rules[class_num][-1] = rules[class_num][-1].rstrip(';') # remove final ";"
+                rules[class_num][-1] = rules[class_num][-1].rstrip(';')  # remove final ";"
                 class_num += 1
 
         # Parse disjuncts, following specific format as outputted by grammar_generator.py
@@ -76,16 +78,17 @@ class GrammarSampler(object):
 
         # First generate a random tree
         tree_sample = self.GenerateTree()
+        print(tree_sample)
         self.flatTree = list(self.Flatten(tree_sample))
-        
+
         # Obtain links from random tree
         self.ConstructLinks(tree_sample)
 
-        sentence_array = np.full(len(self.flatTree), None) # initialize empty sentence array
-        
+        sentence_array = np.full(len(self.flatTree), None)  # initialize empty sentence array
+
         # Fill sentence array
         for key, value in self.links.items():
-            key_word, key_pos = self.ReturnPos(key) # search for word-instance position in the tree
+            key_word, key_pos = self.ReturnPos(key)  # search for word-instance position in the tree
             sentence_array[key_pos - 1] = key_word
             for val in value:
                 val_word, val_pos = self.ReturnPos(val)
@@ -102,7 +105,7 @@ class GrammarSampler(object):
         print(f"ULL parse: \n{self.sentence}\n{sortedLinks}\n")
 
         return self.sentence, sortedLinks
-        
+
     def ReturnPos(self, word_string):
         """
         Given a word string, find its position in the tree.
@@ -112,7 +115,7 @@ class GrammarSampler(object):
         word_tuple = (int(split_word[2]), int(split_word[1]))
         return split_word[0], self.flatTree.index(word_tuple) + 1
 
-    def Flatten(self, l): # taken from https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
+    def Flatten(self, l):  # taken from https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
         """
         Given a list of nested lists, returns a flat structure in the same sequence.
         Useful to find the order of words in a sentence
@@ -121,29 +124,29 @@ class GrammarSampler(object):
             if isinstance(el, collections.Iterable) and not isinstance(el, (str, bytes, tuple)):
                 yield from self.Flatten(el)
             else:
-                yield el    
-    
+                yield el
+
     def ChooseConjunct(self, connector, disjunct):
         """
         Chooses a random conjunct from the ones in disjunct that contain connector
         """
-        valid_conjs = [conj for conj in disjunct if connector in conj] # filters inappropriate connectors
+        valid_conjs = [conj for conj in disjunct if connector in conj]  # filters inappropriate connectors
         return list(rand.choice(valid_conjs))
 
-    def GenerateTree(self, node_class = None, connector = ()):
+    def GenerateTree(self, node_class=None, connector=()):
         """ 
         Recursive method to generate a random tree of class elements from the
         grammar, starting with the given class.
         """
-        if self.counter == 0: # handle initial case
+        if self.counter == 0:  # handle initial case
             node_class = rand.randint(0, len(self.disj_dict) - 1)
             conjunct = rand.sample(self.disj_dict[node_class], 1)[0]
         else:
             # select one valid production of this class randomly
             conjunct = self.ChooseConjunct(connector, self.disj_dict[node_class])
-            conjunct.remove(connector) # eliminate connector already used
+            conjunct.remove(connector)  # eliminate connector already used
 
-        tree = [(self.counter, node_class)] # leaf tuple structure: (word_order, class)
+        tree = [(self.counter, node_class)]  # leaf tuple structure: (word_order, class)
 
         # for non-terminals, recurse
         for conn in conjunct:
@@ -153,9 +156,9 @@ class GrammarSampler(object):
             # decide to insert subtree at beginning or end of current one
             insert_pos = len(tree) if conn.index(node_class) == 0 else 0
             tree.insert(insert_pos, self.GenerateTree(new_node_class[0], conn))
-            
+
         return tree
-    
+
     def SampleWord(self, pos, grammar_class):
         """
         Samples word from given grammar_class, and returns string in format
@@ -165,7 +168,7 @@ class GrammarSampler(object):
         chosen_word = rand.choice(self.word_dict[grammar_class])
         word_string = chosen_word + f"_{grammar_class}_" + str(pos)
         return word_string
-        
+
     def ConstructLinks(self, tree):
         """
         Iterative method to store links that given tree contains.
@@ -173,13 +176,13 @@ class GrammarSampler(object):
         """
         # Every list has only one tuple in current level, and 0 or more lists. Find the tuple:
         curr_word_class = [i for i in tree if isinstance(i, tuple)][0]
-        curr_string = self.SampleWord(curr_word_class[0], curr_word_class[1]) # Samples word in string format
-        
+        curr_string = self.SampleWord(curr_word_class[0], curr_word_class[1])  # Samples word in string format
+
         # non-terminal case
         if len(tree) > 1:
             self.links[curr_string] = []
             tree.remove(curr_word_class)
             for subtree in tree:
                 self.links[curr_string].append(self.ConstructLinks(subtree))
-                
+
         return curr_string
