@@ -28,6 +28,7 @@ class GrammarSampler(object):
         self.counter = 0  # tracks order of words generation
         self.links = {}
         self.sentence = None
+        self.tree = []
         self.flatTree = None
         self.ullParse = None
         self.ullLinks = []
@@ -77,7 +78,8 @@ class GrammarSampler(object):
         self.links = {}
 
         # First generate a random tree
-        tree_sample = self.GenerateTree()
+        self.GenerateTree()
+        tree_sample = self.tree
         print(tree_sample)
         self.flatTree = list(self.Flatten(tree_sample))
 
@@ -133,31 +135,39 @@ class GrammarSampler(object):
         valid_conjs = [conj for conj in disjunct if connector in conj]  # filters inappropriate connectors
         return list(rand.choice(valid_conjs))
 
-    def GenerateTree(self, node_class=None, connector=()):
+    def GenerateTree(self, node_class=None, connector=(), curr_pos=0):
         """ 
         Recursive method to generate a random tree of class elements from the
         grammar, starting with the given class.
         """
         if self.counter == 0:  # handle initial case
-            node_class = rand.randint(0, len(self.disj_dict) - 1)
-            conjunct = rand.sample(self.disj_dict[node_class], 1)[0]
+            node_class = rand.randint(0, len(self.disj_dict) - 1)  # choose random class to begin
+            conjunct = rand.sample(self.disj_dict[node_class], 1)[0]  # choose random conjunct
+            self.tree = [(self.counter, node_class)]
         else:
             # select one valid production of this class randomly
             conjunct = self.ChooseConjunct(connector, self.disj_dict[node_class])
-            conjunct.remove(connector)  # eliminate connector already used
+            #conjunct.remove(connector)  # eliminate connector already used
 
-        tree = [(self.counter, node_class)]  # leaf tuple structure: (word_order, class)
+        #tree = [(self.counter, node_class)]  # leaf tuple structure: (word_order, class)
 
         # for non-terminals, recurse
+        words_right = 0
+        words_left = 0
         for conn in conjunct:
             self.counter += 1
             new_node_class = list(conn)
             new_node_class.remove(node_class)
-            # decide to insert subtree at beginning or end of current one
-            insert_pos = len(tree) if conn.index(node_class) == 0 else 0
-            tree.insert(insert_pos, self.GenerateTree(new_node_class[0], conn))
-
-        return tree
+            # decide to insert connector class at beginning or end of current one
+            if conn.index(node_class) == 0: # in this case, connector is "+"
+                words_right += 1
+                insert_pos = curr_pos + words_right
+            else: # in this case, connector is "-"
+                insert_pos = curr_pos + words_left
+                words_left -= 1
+            if conn != connector:
+                self.tree.insert(insert_pos, (self.counter, new_node_class[0]))
+                self.GenerateTree(new_node_class[0], conn, insert_pos)
 
     def SampleWord(self, pos, grammar_class):
         """
