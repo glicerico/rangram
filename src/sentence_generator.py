@@ -152,20 +152,14 @@ class GrammarSampler(object):
         #tree = [(self.counter, node_class)]  # leaf tuple structure: (word_order, class)
 
         # for non-terminals, recurse
-        words_right = 0
-        words_left = 0
-        for conn in conjunct:
-            self.counter += 1
+        for conn in reversed(conjunct):
             new_node_class = list(conn)
             new_node_class.remove(node_class)
-            # decide to insert connector class at beginning or end of current one
-            if conn.index(node_class) == 0: # in this case, connector is "+"
-                words_right += 1
-                insert_pos = curr_pos + words_right
-            else: # in this case, connector is "-"
-                insert_pos = curr_pos + words_left
-                words_left -= 1
+            # depending on the order of classes in the connector,
+            # decide to insert new word before (-) or after (+) current word
+            insert_pos = curr_pos + 1 if conn.index(node_class) == 0 else curr_pos
             if conn != connector:
+                self.counter += 1
                 self.tree.insert(insert_pos, (self.counter, new_node_class[0]))
                 self.GenerateTree(new_node_class[0], conn, insert_pos)
 
