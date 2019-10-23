@@ -78,13 +78,12 @@ class GrammarSampler(object):
         self.links = {}
 
         # First generate a random tree
-        print(self.GenerateTree())
-        tree_sample = self.tree
-        print(tree_sample)
-        self.flatTree = list(self.Flatten(tree_sample))
+        self.GenerateTree()
+        print(self.tree)
+        self.flatTree = list(self.Flatten(self.tree))
 
         # Obtain links from random tree
-        self.ConstructLinks(tree_sample)
+        #self.ConstructLinks(tree_sample)
 
         sentence_array = np.full(len(self.flatTree), None)  # initialize empty sentence array
 
@@ -136,16 +135,20 @@ class GrammarSampler(object):
         return list(rand.choice(valid_conjs))
 
     def GenerateTree(self, node_class=None, connector=(), parent_size=0, node_pos=0):
+        """
+        Recursive method to generate a random tree of class elements from the
+        grammar, starting with the given class.
+        """
         if self.counter == 0:  # handle initial case
             node_class = rand.randint(0, len(self.disj_dict) - 1)  # choose random class to begin
             conjunct = rand.sample(self.disj_dict[node_class], 1)[0]  # choose random conjunct
             self.tree = [(self.counter, node_class)]
-        else:
-            # select one valid production of this class randomly
+        else:  # select one valid production of this class randomly
             conjunct = self.ChooseConjunct(connector, self.disj_dict[node_class])
 
-        size_r = 0 # counts words inserted to the right by this call
-        size_l = 0 # counts words inserted to the left by this call
+        parent_counter = self.counter # save it for link creation
+        size_r = 0  # counts words inserted to the right by this call
+        size_l = 0  # counts words inserted to the left by this call
         insert_pos_r = node_pos + 1
         insert_pos_l = node_pos
 
@@ -154,56 +157,29 @@ class GrammarSampler(object):
             new_node_class = list(conn)
             new_node_class.remove(node_class)
 
-            if conn == connector: # don't insert if it's parent node; adjust insert_pos
+            if conn == connector:  # don't insert if it's parent node; adjust insert_pos
                 if conn.index(node_class) == 0:
                     insert_pos_r += parent_size
                 else:
                     insert_pos_l -= parent_size
             else:
                 self.counter += 1
-
+                new_node = (self.counter, new_node_class[0])
+                self.ConstructLink((parent_counter, node_class), new_node)  # store link
                 # insert to right or left
-                if conn.index(node_class) == 0: # right
-                    self.tree.insert(insert_pos_r, (self.counter, new_node_class[0]))
+                if conn.index(node_class) == 0:  # right
+                    self.tree.insert(insert_pos_r, new_node)
                     size_r += 1
                     size_branch = self.GenerateTree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_r)
-                    size_r += size_branch # add size of newly added branch
-                else: # left
-                    self.tree.insert(insert_pos_l, (self.counter, new_node_class[0]))
+                    size_r += size_branch  # add size of newly added branch
+                else:  # left
+                    self.tree.insert(insert_pos_l, new_node)
                     size_l += 1
                     size_branch = self.GenerateTree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_l)
-                    size_l += size_branch # add size of newly added branch
-                    insert_pos_r += 1 + size_branch # correct position for added word and branch on left
+                    size_l += size_branch  # add size of newly added branch
+                    insert_pos_r += 1 + size_branch  # correct position for added word and branch on left
 
         return size_r + size_l
-
-    # def GenerateTree(self, node_class=None, connector=(), curr_pos=0):
-    #     """
-    #     Recursive method to generate a random tree of class elements from the
-    #     grammar, starting with the given class.
-    #     """
-    #     if self.counter == 0:  # handle initial case
-    #         node_class = rand.randint(0, len(self.disj_dict) - 1)  # choose random class to begin
-    #         conjunct = rand.sample(self.disj_dict[node_class], 1)[0]  # choose random conjunct
-    #         self.tree = [(self.counter, node_class)]
-    #     else:
-    #         # select one valid production of this class randomly
-    #         conjunct = self.ChooseConjunct(connector, self.disj_dict[node_class])
-    #         #conjunct.remove(connector)  # eliminate connector already used
-    #
-    #     #tree = [(self.counter, node_class)]  # leaf tuple structure: (word_order, class)
-    #
-    #     # for non-terminals, recurse
-    #     for conn in reversed(conjunct):
-    #         new_node_class = list(conn)
-    #         new_node_class.remove(node_class)
-    #         # depending on the order of classes in the connector,
-    #         # decide to insert new word before (-) or after (+) current word
-    #         insert_pos = curr_pos + 1 if conn.index(node_class) == 0 else curr_pos
-    #         if conn != connector:
-    #             self.counter += 1
-    #             self.tree.insert(insert_pos, (self.counter, new_node_class[0]))
-    #             self.GenerateTree(new_node_class[0], conn, insert_pos)
 
     def SampleWord(self, pos, grammar_class):
         """
@@ -214,6 +190,18 @@ class GrammarSampler(object):
         chosen_word = rand.choice(self.word_dict[grammar_class])
         word_string = chosen_word + f"_{grammar_class}_" + str(pos)
         return word_string
+
+    def ConstructLink(self, parent_node, child_node):
+        """
+        Method to form an entry in self.links from a pair of connected nodes
+        """
+        # Sample words in string format
+        parent_string = self.SampleWord(parent_node[0], parent_node[1])
+        child_string = self.SampleWord(child_node[0], child_node[1])
+
+        if parent_string not in self.links:
+            self.links[parent_string] = []
+        self.links[parent_string].append(child_string)
 
     def ConstructLinks(self, tree):
         """
