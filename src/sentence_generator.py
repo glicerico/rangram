@@ -135,7 +135,7 @@ class GrammarSampler(object):
         valid_conjs = [conj for conj in disjunct if connector in conj]  # filters inappropriate connectors
         return list(rand.choice(valid_conjs))
 
-    def GenerateTree(self, node_class=None, connector=(), parent_size=0, node_pos=0):
+    def GenerateTree(self, node_class=None, connector=(), parent_size=1, node_pos=0):
         if self.counter == 0:  # handle initial case
             node_class = rand.randint(0, len(self.disj_dict) - 1)  # choose random class to begin
             conjunct = rand.sample(self.disj_dict[node_class], 1)[0]  # choose random conjunct
@@ -144,26 +144,32 @@ class GrammarSampler(object):
             # select one valid production of this class randomly
             conjunct = self.ChooseConjunct(connector, self.disj_dict[node_class])
 
-        size_r = 0 # counts words inserted to the right by this and sub-calls
-        size_l = -1 # counts words inserted to the left by this and sub-calls
+        size_r = 0 # counts words inserted to the right by this call
+        size_l = 0 # counts words inserted to the left by this call
+        insert_pos_r = node_pos + 1
+        insert_pos_l = node_pos
 
         # Insert word from new node, and recurse to expand the node
         for conn in conjunct:
             new_node_class = list(conn)
             new_node_class.remove(node_class)
-            # depending on the order of classes in the connector,
-            # decide to insert new word after (+) or before (-) current word
-            if conn.index(node_class) == 0:
-                size_r += 1 if conn != connector else parent_size
-                insert_pos = node_pos + size_r # insert to the right
-            else:
-                size_l += 1 if conn != connector else parent_size
-                insert_pos = node_pos - size_l # insert to the left
 
-            if conn != connector:
+            if conn == connector: # don't insert if its parent node; adjust insert_pos
+                if conn.index(node_class) == 0:
+                    insert_pos_r += parent_size
+                else:
+                    insert_pos_l -= parent_size
+            else:
                 self.counter += 1
-                self.tree.insert(insert_pos, (self.counter, new_node_class[0]))
-                size_branch = self.GenerateTree(new_node_class[0], conn, size_r + size_l, insert_pos)
+
+                # insert to left or right
+                if conn.index(node_class) == 0:
+                    self.tree.insert(insert_pos_r, (self.counter, new_node_class[0]))
+                    size_branch = self.GenerateTree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_r)
+                else:
+                    self.tree.insert(insert_pos_l, (self.counter, new_node_class[0]))
+                    size_branch = self.GenerateTree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_l)
+
                 # Add size of branch to correct side
                 if conn.index(node_class) == 0:
                     size_r += size_branch
