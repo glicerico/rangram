@@ -29,7 +29,6 @@ class GrammarSampler(object):
         self.links = {}
         self.sentence = None
         self.tree = []
-        self.flatTree = None
         self.ullParse = None
         self.ullLinks = []
 
@@ -79,7 +78,6 @@ class GrammarSampler(object):
 
         # First generate a random tree
         self.GenerateTree()
-        self.flatTree = list(self.Flatten(self.tree))
 
         sentence_array = np.full(len(self.tree), None)  # initialize empty sentence array
 
@@ -111,17 +109,6 @@ class GrammarSampler(object):
         split_word = word_string.split("_")
         word_tuple = (int(split_word[2]), int(split_word[1]))
         return split_word[0], self.tree.index(word_tuple) + 1
-
-    def Flatten(self, l):  # taken from https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
-        """
-        Given a list of nested lists, returns a flat structure in the same sequence.
-        Useful to find the order of words in a sentence
-        """
-        for el in l:
-            if isinstance(el, collections.Iterable) and not isinstance(el, (str, bytes, tuple)):
-                yield from self.Flatten(el)
-            else:
-                yield el
 
     def ChooseConjunct(self, connector, disjunct):
         """
