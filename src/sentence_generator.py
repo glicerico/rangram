@@ -79,13 +79,9 @@ class GrammarSampler(object):
 
         # First generate a random tree
         self.GenerateTree()
-        print(self.tree)
         self.flatTree = list(self.Flatten(self.tree))
 
-        # Obtain links from random tree
-        #self.ConstructLinks(tree_sample)
-
-        sentence_array = np.full(len(self.flatTree), None)  # initialize empty sentence array
+        sentence_array = np.full(len(self.tree), None)  # initialize empty sentence array
 
         # Fill sentence array
         for key, value in self.links.items():
@@ -114,7 +110,7 @@ class GrammarSampler(object):
         """
         split_word = word_string.split("_")
         word_tuple = (int(split_word[2]), int(split_word[1]))
-        return split_word[0], self.flatTree.index(word_tuple) + 1
+        return split_word[0], self.tree.index(word_tuple) + 1
 
     def Flatten(self, l):  # taken from https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
         """
