@@ -96,10 +96,10 @@ class GrammarSampler(object):
         # Concatenate parse text output
         self.sentence = " ".join(sentence_array)
         self.ullLinks.sort()
-        sortedLinks = "\n".join(self.ullLinks)
-        print(f"ULL parse: \n{self.sentence}\n{sortedLinks}\n")
+        sorted_links = "\n".join(self.ullLinks)
+        print(f"ULL parse: \n{self.sentence}\n{sorted_links}\n")
 
-        return self.sentence, sortedLinks
+        return self.sentence, sorted_links
 
     def ReturnPos(self, word_string):
         """
@@ -185,21 +185,3 @@ class GrammarSampler(object):
         if parent_string not in self.links:
             self.links[parent_string] = []
         self.links[parent_string].append(child_string)
-
-    def ConstructLinks(self, tree):
-        """
-        Iterative method to store links that given tree contains.
-        Links are stored in self.links
-        """
-        # Every list has only one tuple in current level, and 0 or more lists. Find the tuple:
-        curr_word_class = [i for i in tree if isinstance(i, tuple)][0]
-        curr_string = self.SampleWord(curr_word_class[0], curr_word_class[1])  # Samples word in string format
-
-        # non-terminal case
-        if len(tree) > 1:
-            self.links[curr_string] = []
-            tree.remove(curr_word_class)
-            for subtree in tree:
-                self.links[curr_string].append(self.ConstructLinks(subtree))
-
-        return curr_string
