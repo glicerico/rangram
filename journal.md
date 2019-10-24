@@ -20,6 +20,8 @@ First corpora generated in workdir are of size 5, 10, 50, 100, 200, 500 and 1000
 For each corpus, only a subset of the sentences are unique. The following lists the nbr
 of unique sentences per corpus size in this experiment:
 
+ERRATA (Oct, 2019): This section was written when there was a bug in the corpus generator.
+See Oct 24, 2019 entry for corrected numbers.
 ```
 SIZE  	UNIQUE SENTS
 5		5
@@ -170,3 +172,20 @@ F1 score [%]
 |        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
 |--------|----------|------|-----|-----|-----|-----|-------|
 ####|rangramNull|58.42     |46.6  |56.27|56.31|97.4 |56.92|55.2   |
+
+## 24 Oct, 2019; ASuMa
+A [bug on the sentence generator code](https://github.com/glicerico/rangram/issues/11) 
+had been noticed in the past (referred above).
+It produced ungrammatical sentences, and thus affected all results above.
+The methods description is still valid, only the numbers are incorrect.
+
+Here's a summary of the re-evaluation of methods using rangram0.
+
+************************************
+
+First, the grammar rangram0.grammar was improved slightly.
+In its current form, it allows for a maximum of 40 unique sentences, all of which are produced by the corpus generator when asked for 200 sentences.
+
+
+
+ 
