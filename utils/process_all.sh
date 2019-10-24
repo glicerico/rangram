@@ -29,7 +29,7 @@ cd sequential || exit
 parse-evaluator -si -r ../GS -t ../GS
 # Append sequential results to all_results file
 {
-  printf "Sequential parser results:\n\n"; cat *.stat; printf "#################### \n\n"
+  printf "Sequential parser results:\n\n"; cat ./*.stat; printf "#################### \n\n"
 } >> ../all_results.txt
 cd ..
 

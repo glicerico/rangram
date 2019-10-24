@@ -11,7 +11,7 @@ Equally important, we also get a Gold Standard to evaluate the processing method
 
 ***************************
 
-The first tested gramar is in data/rangram0.grammar and consists of 6 grammatical classes
+The first tested grammar [rangram0.grammar](data/rangram0.grammar) and consists of 6 grammatical classes
 (2 related to nouns, 1 to verbs, 1 to adjectives, 1 to adverbs and 1 to determiners).
 Each class has only one possible word and disjuncts are created having in mind the
 English language rules; no Zipfian distributions are expected in the resulting corpus.
@@ -162,30 +162,51 @@ Again, this should be seen as an exercise to test the parsing and evaluation pip
 This is probably because such a limited grammar can hardly provide meaningful mutual information measures that could be leveraged by the parses that rely on these.
 ************************************
 
-### Evaluating rangram1
-Since the parsers are not able to properly parse even rangram0, probably for the reasons just mentioned above, we try with a randomly generated grammar: rangram1.
-
-Following a similar evaluation as above for rangram0, we get the following result summary table:
-
-F1 score [%]
-
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-####|rangramNull|58.42     |46.6  |56.27|56.31|97.4 |56.92|55.2   |
-
 ## 24 Oct, 2019; ASuMa
-A [bug on the sentence generator code](https://github.com/glicerico/rangram/issues/11) 
+A [bug in the sentence-generator code](https://github.com/glicerico/rangram/issues/11) 
 had been noticed in the past (referred above).
 It produced ungrammatical sentences, and thus affected all results above.
-The methods description is still valid, only the numbers are incorrect.
+The description of the evaluation methods is still valid, only the numbers are incorrect.
 
 Here's a summary of the re-evaluation of methods using rangram0.
 
 ************************************
 
-First, the grammar rangram0.grammar was improved slightly.
+First, it should be mentioned that the grammar rangram0.grammar was improved slightly after the experiments above.
 In its current form, it allows for a maximum of 40 unique sentences, all of which are produced by the corpus generator when asked for 200 sentences.
 
+F1 score [%]
 
+|        |Sequential|Random| SP  |ULLP |GL  |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|----|-----|-------|
+|rangram0|68.14     |52.0  |66.08|53.16|100 |     |       |
 
+The results from the fixed corpus generator for `rangram0` are in general better than the past ones, but the relative performance of the methods didn't change greatly.
+In particular, the best parsing result is still `sequential` parsing, closely followed by the `stream-parser`, when it produces almost-sequential parses.
+However, the distribution of results from `stream-parser` did change slightly from the past one (image above).
+Here's the corresponding image for this remake:
+
+![F1 scores for rangram0 processed with SP](results/plots/rangram0_40s_f1score.png)
+
+Interestingly, the results for the `ULL parser` decreased slightly.
+The `grammar-learner`, on the other hand, achieved perfect score, and now produces the correct grammar;
+now that the corpus is correctly generated from the grammar, GL can learn it right.
+We didn't perform `SP+GL` or `ULLP+GL` experiments this time, expecting them to show a similar trend.
  
+**************************************** 
+### Evaluating rangram-1 (read as "rangram negative 1")
+The parsers are not able to properly parse even rangram0, and they don't score above sequential parses.
+As I created an even simpler grammar for debugging, [rangram-1.grammar](data/rangram-1.grammar), I run it through the automated tests.
+The corpus from this grammar contains only 4 unique sentences, and its parses are almost sequential (except for a link from `the` and `kids` in the sentence `the red kids eat turtles`).
+The results are:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram-1|93.75     |55.19|93.75|93.75|100  |     |   |
+
+All the learned parses are sequential, and this score as good as that baseline.
+The `grammar-learner` again learns the proper grammar, though.
+
+
