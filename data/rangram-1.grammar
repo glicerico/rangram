@@ -1,0 +1,24 @@
+
+% HAND-CRAFTED GRAMMAR
+% by Linas' suggestion
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Class: 0
+kids:
+(C0_1+ & C3_0- & C4_0-) or (C0_1+ & C3_0-) or (C0_1+ & C4_0-) or (C0_1+);
+
+% Class: 1
+eat:
+(C0_1- & C1_2+);
+
+% Class: 2
+turtles:
+(C1_2-);
+
+% Class: 3
+red:
+(C3_0+);
+
+% Class: 4
+the:
+(C4_0+);

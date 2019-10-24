@@ -4,11 +4,10 @@
 
 # ASuMa, Aug 2019
 
-import sys, getopt, os
-import re
+import sys
+import getopt
 from sentence_generator import GrammarSampler
 
-__all__ = []
 
 def main(argv):
     """
@@ -37,15 +36,15 @@ def main(argv):
         ]
     """
 
-    kwargs = {}
     # Default values
+    outfile = ''
     input_grammar = ''
     grammar_mode = 'existing'
     corpus_size = 10
 
     try:
-        opts, args = getopt.getopt(argv,"hg:s:o:i:",["grammar_mode=",
-            "corpus_size=", "outfile=", "input_grammar="])
+        opts, args = getopt.getopt(argv, "hg:s:o:i:", ["grammar_mode=",
+                                                       "corpus_size=", "outfile=", "input_grammar="])
     except getopt.GetoptError:
         print('''Usage: corpus_generator.py -o <outfile>
                                     [-g <grammar_mode> -s <corpus_size> -i <input_grammar> -v <vocab_size>]''')
@@ -70,28 +69,28 @@ def main(argv):
     if input_grammar == '':
         raise getopt.GetoptError("No grammar file specified")
 
-    #Execute_Precleaner(inputdir, outputdir, **kwargs)
-    GenerateCorpus(grammar_mode, corpus_size, outfile, input_grammar)
+    generate_corpus(grammar_mode, corpus_size, outfile, input_grammar)
 
 
-def GenerateCorpus(grammar_mode: str, corpus_size: int, outfile: str, input_grammar: str):
+def generate_corpus(grammar_mode: str, corpus_size: int, outfile: str, input_grammar: str):
     """
     Corpus generator. Uses class GrammarSampler in sentence_generator.py
     """
 
     grammar = GrammarSampler(input_grammar)
-    sentences = set(); # keeps unique sentences
+    sentences = set()  # keeps unique sentences
 
     with open(outfile, 'w') as fcorpus:
         with open(outfile + ".ull", 'w') as fparses:
             for counter in range(0, corpus_size):
-                sentence, parse = grammar.GenerateParse()
+                sentence, parse = grammar.generate_parse()
                 if sentence not in sentences:
                     sentences.add(sentence)
                     fcorpus.write(sentence + '\n\n')
                     fparses.write(sentence + '\n')
                     fparses.write(parse + '\n\n')
     print(f"Generated {len(sentences)} unique sentences, out of {corpus_size} requested\n")
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
