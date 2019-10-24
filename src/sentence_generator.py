@@ -17,9 +17,7 @@ class GrammarSampler(object):
 
     def __init__(self, grammar_file):
         """
-        Initialize class object. Takes:
-        grammar:        dictionary of grammar classes with their connectors
-        cumul_words:    cumulative distribution of words in each class
+        Initialize class object. Takes a grammar file in the Link Grammar format.
         """
         self.disj_dict = {}
         self.word_dict = {}
@@ -28,8 +26,8 @@ class GrammarSampler(object):
         self.links = {}
         self.sentence = None
         self.tree = []
-        self.ullParse = None
-        self.ullLinks = []
+        self.ull_parse = None
+        self.ull_links = []
 
     def grammar_parser(self, grammar_file):
         """
@@ -72,31 +70,31 @@ class GrammarSampler(object):
         """
         # Reset global variables
         self.counter = 0
-        self.ullLinks = []
+        self.ull_links = []
         self.links = {}
 
         # First generate a random tree
         self.generate_tree()
-        print(self.tree)
 
         sentence_array = np.full(len(self.tree), None)  # initialize empty sentence array
 
-        # Fill sentence array
+        # Fill sentence array, and create links output in ULL format
         for key, value in self.links.items():
             key_word, key_pos = self.return_pos(key)  # search for word-instance position in the tree
             sentence_array[key_pos - 1] = key_word
             for val in value:
                 val_word, val_pos = self.return_pos(val)
                 sentence_array[val_pos - 1] = val_word
+                # Fill in the links in ULL format
                 if key_pos < val_pos:
-                    self.ullLinks.append(f"{key_pos} {key_word} {val_pos} {val_word}")
+                    self.ull_links.append(f"{key_pos} {key_word} {val_pos} {val_word}")
                 else:
-                    self.ullLinks.append(f"{val_pos} {val_word} {key_pos} {key_word}")
+                    self.ull_links.append(f"{val_pos} {val_word} {key_pos} {key_word}")
 
         # Concatenate parse text output
         self.sentence = " ".join(sentence_array)
-        self.ullLinks.sort()
-        sorted_links = "\n".join(self.ullLinks)
+        self.ull_links.sort()
+        sorted_links = "\n".join(self.ull_links)
         print(f"ULL parse: \n{self.sentence}\n{sorted_links}\n")
 
         return self.sentence, sorted_links
@@ -110,7 +108,8 @@ class GrammarSampler(object):
         word_tuple = (int(split_word[2]), int(split_word[1]))
         return split_word[0], self.tree.index(word_tuple) + 1
 
-    def choose_conjunct(self, connector, disjunct):
+    @staticmethod
+    def choose_conjunct(connector, disjunct):
         """
         Chooses a random conjunct from the ones in disjunct that contain connector
         """
@@ -129,18 +128,18 @@ class GrammarSampler(object):
         else:  # select one valid production of this class randomly
             conjunct = self.choose_conjunct(connector, self.disj_dict[node_class])
 
-        parent_counter = self.counter  # save it for link creation
-        size_r = 0  # counts words inserted to the right by this call
-        size_l = 0  # counts words inserted to the left by this call
-        insert_pos_r = node_pos + 1
-        insert_pos_l = node_pos
+        parent_counter = self.counter  # save current counter for link creation
+        size_r = 0  # words inserted to the right by this call of method
+        size_l = 0  # words inserted to the left by this call of method
+        insert_pos_r = node_pos + 1  # position to insert on the right of current node
+        insert_pos_l = node_pos  # position to insert on the left of current node
 
-        # Insert word from new node, and recurse to expand the node
+        # Insert new node, and recurse to expand the node
         for conn in conjunct:
             new_node_class = list(conn)
-            new_node_class.remove(node_class)
+            new_node_class.remove(node_class)  # obtain which other class is linked
 
-            if conn == connector:  # don't insert if it's parent node; adjust insert_pos
+            if conn == connector:  # don't insert if conn is parent node; and adjust insert_pos
                 if conn.index(node_class) == 0:
                     insert_pos_r += parent_size
                 else:
@@ -149,7 +148,7 @@ class GrammarSampler(object):
                 self.counter += 1
                 new_node = (self.counter, new_node_class[0])
                 self.construct_link((parent_counter, node_class), new_node)  # store link
-                # insert to right or left
+                # insert to right or left and recurse
                 if conn.index(node_class) == 0:  # right
                     self.tree.insert(insert_pos_r, new_node)
                     size_r += 1
@@ -165,7 +164,7 @@ class GrammarSampler(object):
 
                 insert_pos_r += 1 + size_branch  # update for added word and branch
 
-        return size_r + size_l
+        return size_r + size_l  # return num of added words by current iteration
 
     def sample_word(self, pos, grammar_class):
         """
