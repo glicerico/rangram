@@ -78,6 +78,7 @@ class GrammarSampler(object):
 
         # First generate a random tree
         self.GenerateTree()
+        print(self.tree)
 
         sentence_array = np.full(len(self.tree), None)  # initialize empty sentence array
 
@@ -160,7 +161,8 @@ class GrammarSampler(object):
                     size_l += 1
                     size_branch = self.GenerateTree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_l)
                     size_l += size_branch  # add size of newly added branch
-                    insert_pos_r += 1 + size_branch  # correct position for added word and branch on left
+
+                insert_pos_r += 1 + size_branch  # update for added word and branch
 
         return size_r + size_l
 
