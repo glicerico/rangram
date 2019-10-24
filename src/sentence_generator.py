@@ -6,7 +6,6 @@
 # https://eli.thegreenplace.net/2010/01/28/generating-random-sentences-from-a-context-free-grammar
 
 import numpy as np
-import collections
 import random as rand
 import re
 
@@ -24,7 +23,7 @@ class GrammarSampler(object):
         """
         self.disj_dict = {}
         self.word_dict = {}
-        self.GrammarParser(grammar_file)
+        self.grammar_parser(grammar_file)
         self.counter = 0  # tracks order of words generation
         self.links = {}
         self.sentence = None
@@ -32,7 +31,7 @@ class GrammarSampler(object):
         self.ullParse = None
         self.ullLinks = []
 
-    def GrammarParser(self, grammar_file):
+    def grammar_parser(self, grammar_file):
         """
         Opens a given grammar file and parses both vocabulary
         and disjuncts from each class, then puts them in the 
@@ -66,7 +65,7 @@ class GrammarSampler(object):
                 self.disj_dict[key].append(conjunct_list)
             self.disj_dict[key] = tuple(self.disj_dict[key])
 
-    def GenerateParse(self):
+    def generate_parse(self):
         """
         MAIN ENTRY POINT
         Generate a lexical tree and return its corresponding sentence and parse
@@ -77,17 +76,17 @@ class GrammarSampler(object):
         self.links = {}
 
         # First generate a random tree
-        self.GenerateTree()
+        self.generate_tree()
         print(self.tree)
 
         sentence_array = np.full(len(self.tree), None)  # initialize empty sentence array
 
         # Fill sentence array
         for key, value in self.links.items():
-            key_word, key_pos = self.ReturnPos(key)  # search for word-instance position in the tree
+            key_word, key_pos = self.return_pos(key)  # search for word-instance position in the tree
             sentence_array[key_pos - 1] = key_word
             for val in value:
-                val_word, val_pos = self.ReturnPos(val)
+                val_word, val_pos = self.return_pos(val)
                 sentence_array[val_pos - 1] = val_word
                 if key_pos < val_pos:
                     self.ullLinks.append(f"{key_pos} {key_word} {val_pos} {val_word}")
@@ -102,7 +101,7 @@ class GrammarSampler(object):
 
         return self.sentence, sorted_links
 
-    def ReturnPos(self, word_string):
+    def return_pos(self, word_string):
         """
         Given a word string, find its position in the tree.
         Returns actual word, and its position in the sentence
@@ -111,14 +110,14 @@ class GrammarSampler(object):
         word_tuple = (int(split_word[2]), int(split_word[1]))
         return split_word[0], self.tree.index(word_tuple) + 1
 
-    def ChooseConjunct(self, connector, disjunct):
+    def choose_conjunct(self, connector, disjunct):
         """
         Chooses a random conjunct from the ones in disjunct that contain connector
         """
         valid_conjs = [conj for conj in disjunct if connector in conj]  # filters inappropriate connectors
         return list(rand.choice(valid_conjs))
 
-    def GenerateTree(self, node_class=None, connector=(), parent_size=0, node_pos=0):
+    def generate_tree(self, node_class=None, connector=(), parent_size=0, node_pos=0):
         """
         Recursive method to generate a random tree of class elements from the
         grammar, starting with the given class.
@@ -128,9 +127,9 @@ class GrammarSampler(object):
             conjunct = rand.sample(self.disj_dict[node_class], 1)[0]  # choose random conjunct
             self.tree = [(self.counter, node_class)]
         else:  # select one valid production of this class randomly
-            conjunct = self.ChooseConjunct(connector, self.disj_dict[node_class])
+            conjunct = self.choose_conjunct(connector, self.disj_dict[node_class])
 
-        parent_counter = self.counter # save it for link creation
+        parent_counter = self.counter  # save it for link creation
         size_r = 0  # counts words inserted to the right by this call
         size_l = 0  # counts words inserted to the left by this call
         insert_pos_r = node_pos + 1
@@ -149,24 +148,26 @@ class GrammarSampler(object):
             else:
                 self.counter += 1
                 new_node = (self.counter, new_node_class[0])
-                self.ConstructLink((parent_counter, node_class), new_node)  # store link
+                self.construct_link((parent_counter, node_class), new_node)  # store link
                 # insert to right or left
                 if conn.index(node_class) == 0:  # right
                     self.tree.insert(insert_pos_r, new_node)
                     size_r += 1
-                    size_branch = self.GenerateTree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_r)
+                    size_branch = \
+                        self.generate_tree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_r)
                     size_r += size_branch  # add size of newly added branch
                 else:  # left
                     self.tree.insert(insert_pos_l, new_node)
                     size_l += 1
-                    size_branch = self.GenerateTree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_l)
+                    size_branch = \
+                        self.generate_tree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_l)
                     size_l += size_branch  # add size of newly added branch
 
                 insert_pos_r += 1 + size_branch  # update for added word and branch
 
         return size_r + size_l
 
-    def SampleWord(self, pos, grammar_class):
+    def sample_word(self, pos, grammar_class):
         """
         Samples word from given grammar_class, and returns string in format
         "word_a_b", where a is the word class, b is word's position
@@ -176,13 +177,13 @@ class GrammarSampler(object):
         word_string = chosen_word + f"_{grammar_class}_" + str(pos)
         return word_string
 
-    def ConstructLink(self, parent_node, child_node):
+    def construct_link(self, parent_node, child_node):
         """
         Method to form an entry in self.links from a pair of connected nodes
         """
         # Sample words in string format
-        parent_string = self.SampleWord(parent_node[0], parent_node[1])
-        child_string = self.SampleWord(child_node[0], child_node[1])
+        parent_string = self.sample_word(parent_node[0], parent_node[1])
+        child_string = self.sample_word(child_node[0], child_node[1])
 
         if parent_string not in self.links:
             self.links[parent_string] = []
