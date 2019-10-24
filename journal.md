@@ -209,4 +209,34 @@ F1 score [%]
 All the learned parses are sequential, and this score as good as that baseline.
 The `grammar-learner` again learns the proper grammar, though.
 
+****************************************
 
+### Evaluating rangram1
+We now proceed to process our first randomly-generated grammar: [rangram1.grammar](data/rangram1.grammar).
+This grammar includes a small number of grammatical classes, and has a Zipfian distribution of words in the classes (the number of words in each class follows a power law).
+The parameters used to generate `rangram1` are:
+```
+% Grammar parameters:
+% num_words = 20
+% num_classes = 4
+% num_class_connectors = 7
+% connectors_limit = 2
+```
+
+The corpus generated from it contains 4185 unique sentences, which is likely close to the total possible sentences for this grammar.
+Processing with the different methods, we obtain the following results:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram1|67.03     |53.65 |80.65|48.75|100  |     |       |
+
+First interesting thing to notice here is that the `sequential` parse result is improved for the first time.
+The `stream-parser` manages to score better, and not only in one or two parameter combination: it actually beats the baseline in every case.
+This tells us that `rangram1` is not very sequential (similar to `rangram0`), and that the `stream-parser` managed to leverage the mutual information between word-pairs.
+
+In that sense, it's surprising that the `ULL parser` performed so poorly, even worse than `random`.
+The `grammar-learner`, again, learns the grammar perfectly.
+
+It's interesting to see how the size of the corpus makes a big difference in the perfomance of the parsers, even in this grammar which includes a few words per class.
