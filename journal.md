@@ -276,6 +276,37 @@ Taking a look at the ULL parses, we note that for the complete corpus, only one 
 For the smaller corpora, up to 1.43 `###LEFT-WALL###` links are created per sentence (this number is for the `tenth` corpus).
 The creation of such links is affecting the ULL parses positively, somehow, even if they are ignored during evaluation.
 
+On the other hand, we notice that the `tenth` corpus is the first one that causes the GL to not learn the grammar perfectly, in its ALE form.
+
 ********************************************
+
+A more elaborate grammar, [rangram2](data/rangram2.grammar) is created with the following parameters:
+
+```
+% Grammar parameters:
+% num_words = 20
+% num_classes = 8
+% num_class_connectors = 20
+% connectors_limit = 3
+```
+The number of classes, class connectors, and connectors_limit was increased from those of `rangram1`.
+The corpus generated in this case contains 5735 sentences, which is way less than the maximum unique sentences that the grammar can generate.
+In this case, the results are as follows:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram2|52.49     |34.67 |54.78|55.31|75.08|     |       |
+
+Since this is a very incomplete corpus, we test by doubling its size (it has to be regenerated, so it doesn't necessarily include the same sentences as the first corpus):
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram2_double|51.92|34.05 |54.43|55.15|74.38|     |       |
+
+The results did not change much with double corpus size.
 
 
