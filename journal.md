@@ -309,4 +309,10 @@ F1 score [%]
 
 The results did not change much with double corpus size.
 
+****************************
 
+The question arises here as to why the `grammar-learner` fails to learn the grammar correctly.
+To study this in an easier way, we proceed to create some other hand generated grammars that could shed light on this.
+It is also possible that the sentence generator or the random grammars have some bug, and using hand-crafted ones may prove more asy to debug.
+
+[handgram2](data/handgram2.grammar) has the same linking structure as 
