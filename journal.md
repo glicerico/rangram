@@ -102,6 +102,8 @@ Currently, there is no implemented weighting related to distance for word-pairs 
 By using the [stream_evaluate](https://github.com/glicerico/stream-parser/blob/master/src/scripts/stream_evaluate.sh) script, we can use a range of values for winObserve and winParse easily.
 
 Guided by experiments performed with the [ULLP](https://docs.google.com/spreadsheets/d/1TPbtGrqZ7saUHhOIi5yYmQ9c-cvVlAGqY14ATMPVCq4/edit#gid=963717716) in other corpora, we focus our attention to its window-based method (win=6) with distance weight for calculating PMI, and no distance-weight when MST-parsing.
+It's worth noting that the `ULL parser` includes a `###LEFT-WALL###` token, comparable to the `root` node in other grammar formalisms.
+This token will be ignored in the evaluation, but it may affect the structure of the possible parses, as long as it links to anything other than the first word in a sentence.
 
 For the GL, we experiment with both the ILE and ALE methods. The bulk of the parameters can be found in the respective json files of the experiments.
 
@@ -232,11 +234,48 @@ F1 score [%]
 |--------|----------|------|-----|-----|-----|-----|-------|
 |rangram1|67.03     |53.65 |80.65|48.75|100  |     |       |
 
-First interesting thing to notice here is that the `sequential` parse result is improved for the first time.
+First thing to notice here is that the `sequential` parse result is surpassed for the first time.
 The `stream-parser` manages to score better, and not only in one or two parameter combination: it actually beats the baseline in every case.
 This tells us that `rangram1` is not very sequential (similar to `rangram0`), and that the `stream-parser` managed to leverage the mutual information between word-pairs.
 
 In that sense, it's surprising that the `ULL parser` performed so poorly, even worse than `random`.
 The `grammar-learner`, again, learns the grammar perfectly.
 
-It's interesting to see how the size of the corpus makes a big difference in the perfomance of the parsers, even in this grammar which includes a few words per class.
+It's interesting to see how the size of the corpus made a big difference in the perfomance of the parsers, even in this grammar which includes only a few words per class.
+This corpus contains all possible sentence (or almost) from this grammar.
+It could be interesting to see how would the performance be with a fraction of the sentences.
+
+Hence, we cut the size of the previous corpus and GS in half and run the processing again.
+These are the obtained results:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram1_half|71.05  |56.51 |81.7|58.74|100  |     |       |
+
+Again, cutting the corpus size to one quarter of the complete one, we get:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram1_quarter|72.06     |57.61 |82.04|60.75|100  |     |       |
+
+Given the trend, we can't but keep going. 
+One tenth of the complete corpus gives:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram1_tenth|71.03     |57.46 |76.15|62.31|100/98.85  |     |       |
+
+There is a small fluctuation in every score, but the one that stands out is the `ULL parser` one, which increases more than 13% as we reduce the corpus size.
+Taking a look at the ULL parses, we note that for the complete corpus, only one `###LEFT-WALL###` link is created per sentence (which is ignored during evaluation).
+For the smaller corpora, up to 1.43 `###LEFT-WALL###` links are created per sentence (this number is for the `tenth` corpus).
+The creation of such links is affecting the ULL parses positively, somehow, even if they are ignored during evaluation.
+
+********************************************
+
+
