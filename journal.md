@@ -315,4 +315,44 @@ The question arises here as to why the `grammar-learner` fails to learn the gram
 To study this in an easier way, we proceed to create some other hand generated grammars that could shed light on this.
 It is also possible that the sentence generator or the random grammars have some bug, and using hand-crafted ones may prove more asy to debug.
 
-[handgram2](data/handgram2.grammar) has the same linking structure as 
+[handgram2](data/handgram2.grammar) has the same linking structure as handgram1, but it contains more words per category.
+The complete corpus contains all possible 8520 sentences that can be generated from the grammar.
+Results after processing are:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram2|53.83|44.73 |53.22|36.83|100|     |       |
+
+The scores are considerably lower than those of `handgram1`, except for the `grammar-learner`.
+This implies that more vocabulary, or at least the vocabulary distribution assigned to this grammar, makes the complete corpus less sequential, and adds more noise to the word-pair mutual information.
+The grammar-learner still performs perfectly.
+
+The best `stream-parser` results, the closest to `sequential` are obtained with a `winParse=1`, so they are basically sequential as well.
+
+**********************
+For the sake of comparison, we run the evaluations on a tenth of the corpus:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram2_tenth|63.88|51.77 |62.94|48.2|100|     |       |
+
+The change in the sequential score is surprising, so we repeat the evaluation for a different tenth of the corpus
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram2_tenth2|45.91|37.48 |45.98|35.92|100|     |       |
+
+Clearly lower results.
+This made me wonder why the top of the corpus (the first tenth) was more sequential than the last tenth of the corpus.
+The reason is that the mechanism for creating corpora in `corpus_generator.py` only writes a newly created sentence if it was not previously present in the corpus.
+This causes that the sentences more likely to be produced (generally the simpler ones that don't require many recursions) are going to be positioned closer to the beginning of the file.
+In contrast, longer, more convoluted sentences appear near the end of the corpus.
+
+This invalidates the previous experiments done with `rangram1` when reducing the size of the corpus.
+In order to do them properly, we need to randomize the order of the corpora and their respective gold standards.
