@@ -1,0 +1,10 @@
+The corpus generator has a bias towards producing less likely sentences towards the end of the corpus.
+To avoid that when selecting subcorpora, we can order the corpus and its gold standard alphabetically.
+
+To sort corpora and their gold standards alphabetically, we can use vim.
+
+- Open corpus/GS in vim
+- subtitute newlines with '~' by: '%s/\(.\)\n/\1\~/g
+- sort by 'sort'
+- restore newlines by: '%s/\~/\r/g'
+
