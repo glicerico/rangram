@@ -356,3 +356,7 @@ In contrast, longer, more convoluted sentences appear near the end of the corpus
 
 This invalidates the previous experiments done with `rangram1` when reducing the size of the corpus.
 In order to do them properly, we need to randomize the order of the corpora and their respective gold standards.
+An easy way to randomize the complexity of the sentences would be to order them alphabetically.
+This way, we can also organize the gold standard in the same order.
+
+
