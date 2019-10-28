@@ -384,5 +384,17 @@ Tenth of `rangram1` F1 score [%]
 These results fluctuate in a much more expected way than the evaluations on the previously-biased subcorpora.
 ******************************
 
+Coming back to the question of why the `grammar-learner` fails with `rangram2`, it seems like `handgram2` didn't shed much light on it, as the scores on GL are still 100%.
+We create [handgram3](data/handgram3.grammar), which has a word distribution more similar to `rangram2`, where the classes with more connectors to other classes also have more  words.
+
+We create a corpus with 13050 unique sentences, and obtain perfect grammar again:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram3|50.16|41.16 |49.53|34.3|100|     |       |
+
+
 
 
