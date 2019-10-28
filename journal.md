@@ -232,7 +232,7 @@ F1 score [%]
 
 |        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
 |--------|----------|------|-----|-----|-----|-----|-------|
-|rangram1|67.03     |53.65 |80.65|48.75|100  |     |       |
+|rangram1|67.03     |54.05 |80.65|48.75|100  |     |       |
 
 First thing to notice here is that the `sequential` parse result is surpassed for the first time.
 The `stream-parser` manages to score better, and not only in one or two parameter combination: it actually beats the baseline in every case.
@@ -242,11 +242,12 @@ In that sense, it's surprising that the `ULL parser` performed so poorly, even w
 The `grammar-learner`, again, learns the grammar perfectly.
 
 It's interesting to see how the size of the corpus made a big difference in the perfomance of the parsers, even in this grammar which includes only a few words per class.
-This corpus contains all possible sentence (or almost) from this grammar.
+This corpus contains all possible sentences (or almost) from this grammar.
 It could be interesting to see how would the performance be with a fraction of the sentences.
 
 Hence, we cut the size of the previous corpus and GS in half and run the processing again.
-These are the obtained results:
+These are the obtained results (update: these results from fractions of rangram1 are biased, see repetition of the experiment below):
+
 
 F1 score [%]
 
@@ -326,7 +327,7 @@ F1 score [%]
 |handgram2|53.83|44.73 |53.22|36.83|100|     |       |
 
 The scores are considerably lower than those of `handgram1`, except for the `grammar-learner`.
-This implies that more vocabulary, or at least the vocabulary distribution assigned to this grammar, makes the complete corpus less sequential, and adds more noise to the word-pair mutual information.
+This implies that more vocabulary, or at least the vocabulary distribution assigned to this grammar, makes the complete corpus less sequential (probably by generating more samples of the sentence structures that are less sequential), and adds more noise to the word-pair mutual information.
 The grammar-learner still performs perfectly.
 
 The best `stream-parser` results, the closest to `sequential` are obtained with a `winParse=1`, so they are basically sequential as well.
@@ -348,8 +349,8 @@ F1 score [%]
 |--------|----------|------|-----|-----|-----|-----|-------|
 |handgram2_tenth2|45.91|37.48 |45.98|35.92|100|     |       |
 
-Clearly lower results.
-This made me wonder why the top of the corpus (the first tenth) was more sequential than the last tenth of the corpus.
+These are clearly worse results.
+This made me wonder why the top of the corpus (the first tenth) was more sequential than the last tenth of the corpus (`handgram_tenth2`).
 The reason is that the mechanism for creating corpora in `corpus_generator.py` only writes a newly created sentence if it was not previously present in the corpus.
 This causes that the sentences more likely to be produced (generally the simpler ones that don't require many recursions) are going to be positioned closer to the beginning of the file.
 In contrast, longer, more convoluted sentences appear near the end of the corpus.
@@ -358,5 +359,30 @@ This invalidates the previous experiments done with `rangram1` when reducing the
 In order to do them properly, we need to randomize the order of the corpora and their respective gold standards.
 An easy way to randomize the complexity of the sentences would be to order them alphabetically.
 This way, we can also organize the gold standard in the same order.
+
+*************************
+After the above-mentioned randomization, here are the results of evaluation using the smaller `rangram1` corpora:
+
+Half of `rangram1` F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram1_half|66.82|53.0 |76.85|52.7|100|     |       |
+
+Quarter of `rangram1` F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram1_quarter|66.95|53.85|79.6|53.48|100|     |       |
+
+Tenth of `rangram1` F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|rangram1_tenth|65.67|53.54 |77.48|54.04|100|     |       |
+
+These results fluctuate in a much more expected way than the evaluations on the previously-biased subcorpora.
+******************************
+
 
 
