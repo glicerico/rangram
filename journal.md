@@ -395,6 +395,12 @@ F1 score [%]
 |--------|----------|------|-----|-----|-----|-----|-------|
 |handgram3|50.16|41.16 |49.53|34.3|100|     |       |
 
+*****************************
 
+Analyzing the grammar learner results from `rangram2` by eye, we notice the reason of failure:
+there seems to be a bug in the corpus generator that creates link-crossing parses!!
+The actual learned grammars match the functionality of `rangram2`, but because the `Link Grammar` parser doesn't allow link-crossing, then it cannot create many of the parses present in the gold standard.
+We could also notice this by looking at the "parseability" measure outputted by the `grammar-learner`.
 
-
+*****************************
+We then continue with [handgram4](data/handgram4.grammar), which introduces a few more classes and various words to every class.
