@@ -387,13 +387,13 @@ These results fluctuate in a much more expected way than the evaluations on the 
 Coming back to the question of why the `grammar-learner` fails with `rangram2`, it seems like `handgram2` didn't shed much light on it, as the scores on GL are still 100%.
 We create [handgram3](data/handgram3.grammar), which has a word distribution more similar to `rangram2`, where the classes with more connectors to other classes also have more  words.
 
-We create a corpus with 13050 unique sentences, and obtain perfect grammar again:
+We create a corpus with 14518 unique sentences, and obtain perfect grammar again:
 
 F1 score [%]
 
 |        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
 |--------|----------|------|-----|-----|-----|-----|-------|
-|handgram3|50.16|41.16 |49.53|34.3|100|     |       |
+|handgram3|51.27|41.83 |50.65|35.96|100|     |       |
 
 *****************************
 
@@ -403,12 +403,19 @@ The actual learned grammars match the functionality of `rangram2`, but because t
 We could also notice this by looking at the "parseability" measure outputted by the `grammar-learner`.
 
 *****************************
-We then continue with [handgram4](data/handgram4.grammar), which reduces the rules from handgram1 to distinguish between subject and object.
+We then continue with [handgram4](data/handgram4.grammar), which reduces the rules from handgram1 to distinguish between subject and object, adding a few more classes, with only two words per class.
+From a corpus with 17380 sentences, we get:
 
 F1 score [%]
 
 |        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
 |--------|----------|------|-----|-----|-----|-----|-------|
-|handgram4|50.16|41.16 |49.53|34.3|100|     |       |
+|handgram4|61.88|44.01 |64.92|46.01|100|     |       |
 
+Here, the `stream-parser` results are above `sequential`, and show a different distribution as in previous cases, where the highest scores are achieved by higher `winObserve` and `winParse`.
+![F1 scores for handgram4 processed with SP](results/plots/handgram4_17380s_f1score.png)
 
+The `grammar-learner` still works perfectly.
+
+***********************************************
+We now introduce polysemy for the first time, in an attempt to 

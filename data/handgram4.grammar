@@ -4,23 +4,23 @@
 
 % Class: 0
 kids aliens:
-(C0_1+) or (C5_0- & C0_1+) or (C3_0- & C5_0- & C0_1+) or (C1_0-) or (C5_0- & C1_0-) or (C3_0- & C5_0- & C1_0-);
+(C0_1+) or (C5_0- & C0_1+) or (C3_0- & C5_0- & C0_1+) or (C0_6+) or (C5_0- & C0_6+) or (C3_0- & C5_0- & C0_6+);
 
 % Class: 1
-eat entertain:
-(C0_1-) or (C0_1- & C1_2+) or (C0_1- & C1_4+) or (C0_1- & C1_2+ & C1_4+) or (C2_1-) or (C2_1- & C1_0+) or (C2_1- & C1_4+) or (C2_1- & C1_0+ & C1_4+);
+eat ignore:
+(C0_1-) or (C0_1- & C1_2+) or (C0_1- & C1_4+) or (C0_1- & C1_2+ & C1_4+) or (C6_1-) or (C0_1- & C1_2+) or (C6_1- & C1_4+) or (C6_1- & C1_2+ & C1_4+);
 
 % Class: 2
-turtles smurfs:
-(C2_1+) or (C5_2- & C2_1+) or (C3_2- & C5_2- & C2_1+) or (C1_2-) or (C5_2- & C1_2-) or (C3_2- & C5_2- & C1_2-);
+cakes brains:
+(C1_2-) or (C5_2- & C1_2-) or (C3_2- & C5_2- & C1_2-);
 
 % Class: 3
 red bizarre:
-(C3_2+) or (C3_0+);
+(C3_0+) or (C7_3- & C3_0+) or (C3_2+) or (C7_3- & C3_2+);
 
 % Class: 4
 quickly ungracefully:
-(C1_4-);
+(C1_4-) or (C7_4- & C1_4-);
 
 % Class: 5
 the some:
@@ -28,4 +28,9 @@ the some:
 
 % Class: 6
 will can:
-(C0_6- & C6_1+) or ();
+(C0_6- & C6_1+);
+
+% Class: 7
+very somewhat:
+(C7_3+) or (C7_4+);
+
