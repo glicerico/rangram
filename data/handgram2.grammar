@@ -4,15 +4,15 @@
 
 % Class: 0
 kids aliens humanoids punks nuns:
-(C1_0-) or (C0_1+ & C3_0- & C5_0-) or (C0_1+) or (C5_0- & C1_0-) or (C3_0- & C5_0- & C1_0-) or (C5_0- & C1_0-);
+(C0_1+) or (C5_0- & C0_1+) or (C3_0- & C5_0- & C0_1+) or (C1_0-) or (C5_0- & C1_0-) or (C3_0- & C5_0- & C1_0-);
 
 % Class: 1
 eat entertain ignore smuggle:
-(C0_1- & C1_2+ & C1_4+) or (C0_1- & C1_4+) or (C0_1- & C1_2+) or (C0_1-) or (C2_1- & C1_0+ & C1_4+) or (C2_1- & C1_4+) or (C2_1- & C1_0+) or (C2_1-);
+(C0_1-) or (C0_1- & C1_2+) or (C0_1- & C1_4+) or (C0_1- & C1_2+ & C1_4+) or (C2_1-) or (C2_1- & C1_0+) or (C2_1- & C1_4+) or (C2_1- & C1_0+ & C1_4+);
 
 % Class: 2
 turtles smurfs tardigrades:
-(C1_2-) or (C3_2- & C5_2- & C1_2-) or (C5_2- & C2_1+) or (C2_1+ & C3_2- & C5_2-) or (C2_1+) or (C5_2- & C1_2-);
+(C2_1+) or (C5_2- & C2_1+) or (C3_2- & C5_2- & C2_1+) or (C1_2-) or (C5_2- & C1_2-) or (C3_2- & C5_2- & C1_2-);
 
 % Class: 3
 red bizarre ancient:

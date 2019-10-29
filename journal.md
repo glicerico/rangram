@@ -175,22 +175,22 @@ Here's a summary of the re-evaluation of methods using handgram1.
 ************************************
 
 First, it should be mentioned that the grammar handgram1.grammar was improved slightly after the experiments above.
-In its current form, it allows for a maximum of 40 unique sentences, all of which are produced by the corpus generator when asked for 200 sentences.
+In its current form, it allows for a maximum of 48 unique sentences, all of which are produced by the corpus generator when asked for 200 sentences.
 
 F1 score [%]
 
 |        |Sequential|Random| SP  |ULLP |GL  |SP+GL|ULLP+GL|
 |--------|----------|------|-----|-----|----|-----|-------|
-|handgram1|68.14     |52.0  |66.08|53.16|100 |     |       |
+|handgram1|69.7     |57.56  |69.7|50.99|100 |     |       |
 
 The results from the fixed corpus generator for `handgram1` are in general better than the past ones, but the relative performance of the methods didn't change greatly.
-In particular, the best parsing result is still `sequential` parsing, closely followed by the `stream-parser`, when it produces almost-sequential parses.
+The best parsing result is still `sequential` parsing, imitated by the `stream-parser`, when it produces sequential parses.
 However, the distribution of results from `stream-parser` did change slightly from the past one (image above).
 Here's the corresponding image for this remake:
 
-![F1 scores for handgram1 processed with SP](results/plots/handgram1_40s_f1score.png)
+![F1 scores for handgram1 processed with SP](results/plots/handgram1_48s_f1score.png)
 
-Interestingly, the results for the `ULL parser` decreased slightly.
+Interestingly, the results for the `ULL parser` decreased.
 The `grammar-learner`, on the other hand, achieved perfect score, and now produces the correct grammar;
 now that the corpus is correctly generated from the grammar, GL can learn it right.
 We didn't perform `SP+GL` or `ULLP+GL` experiments this time, expecting them to show a similar trend.
@@ -317,7 +317,7 @@ To study this in an easier way, we proceed to create some other hand generated g
 It is also possible that the sentence generator or the random grammars have some bug, and using hand-crafted ones may prove more asy to debug.
 
 [handgram2](data/handgram2.grammar) has the same linking structure as handgram1, but it contains more words per category.
-The complete corpus contains all possible 8520 sentences that can be generated from the grammar.
+The complete corpus contains all possible 9480 sentences that can be generated from the grammar.
 Results after processing are:
 
 F1 score [%]
@@ -403,4 +403,4 @@ The actual learned grammars match the functionality of `rangram2`, but because t
 We could also notice this by looking at the "parseability" measure outputted by the `grammar-learner`.
 
 *****************************
-We then continue with [handgram4](data/handgram4.grammar), which introduces a few more classes and various words to every class.
+
