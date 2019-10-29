@@ -324,7 +324,7 @@ F1 score [%]
 
 |        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
 |--------|----------|------|-----|-----|-----|-----|-------|
-|handgram2|53.83|44.73 |53.22|36.83|100|     |       |
+|handgram2|54.87|45.33|53.8|37.55|100|     |       |
 
 The scores are considerably lower than those of `handgram1`, except for the `grammar-learner`.
 This implies that more vocabulary, or at least the vocabulary distribution assigned to this grammar, makes the complete corpus less sequential (probably by generating more samples of the sentence structures that are less sequential), and adds more noise to the word-pair mutual information.
@@ -403,4 +403,12 @@ The actual learned grammars match the functionality of `rangram2`, but because t
 We could also notice this by looking at the "parseability" measure outputted by the `grammar-learner`.
 
 *****************************
+We then continue with [handgram4](data/handgram4.grammar), which reduces the rules from handgram1 to distinguish between subject and object.
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram4|50.16|41.16 |49.53|34.3|100|     |       |
+
 
