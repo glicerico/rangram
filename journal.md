@@ -419,12 +419,25 @@ The `grammar-learner` still works perfectly.
 
 ***********************************************
 [handgram5](data/handgram5.grammar) simply expands the number of words in each category, but follows the same grammar as `handgram4'`
-Using a 9388 sentence corpus, we get the following results:
+Using a 9388-sentence corpus, we get the following results:
 
 F1 score [%]
 
 |        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
 |--------|----------|------|-----|-----|-----|-----|-------|
-|handgram5|71.14|52.92 |75.8|61.67|100|     |       |
+|handgram5_9388|71.14|52.92 |75.8|61.67|100|     |       |
 
+It's interesting to see better results in every parse, so we wonder if adding more sentences to the corpus could change this.
+A 16437-sentence corpus gives quites simlar results:
 
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram5_16437|70.49|52.49 |75.59|59.99|100|     |       |
+
+A possible explanation for this could be another sentence-complexity bias: adding more words to each category means more possible sentences with the same structure.
+Hence, given that only novel sentences are added to the corpus, we could be taking many more sentences with a similar, easy-to-produce structure.
+This is equal to saying that, when asked for a fixed number of sentences, our `corpus_generator` produces a more complete corpus for `handgram4` than for `handgram5`, and because of the bias towards simpler structures, it means the latter will be more sequential.
+
+**************************************
