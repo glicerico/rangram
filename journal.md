@@ -418,4 +418,13 @@ Here, the `stream-parser` results are above `sequential`, and show a different d
 The `grammar-learner` still works perfectly.
 
 ***********************************************
-We now introduce polysemy for the first time, in an attempt to 
+[handgram5](data/handgram5.grammar) simply expands the number of words in each category, but follows the same grammar as `handgram4'`
+Using a 9388 sentence corpus, we get the following results:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram5|71.14|52.92 |75.8|61.67|100|     |       |
+
+
