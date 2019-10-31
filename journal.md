@@ -441,3 +441,18 @@ Hence, given that only novel sentences are added to the corpus, we could be taki
 This is equal to saying that, when asked for a fixed number of sentences, our `corpus_generator` produces a more complete corpus for `handgram4` than for `handgram5`, and because of the bias towards simpler structures, it means the latter will be more sequential.
 
 **************************************
+Given that these grammars seem easy for the `grammar-learner`, we proceed to introduce polysemy.
+Polysemy is a feature of natural languages that is hard to handle in NLP systems.
+Here, we start with a simple case, just using a couple words in two different categories.
+[handgram6](data/handgram6.grammar) is a replica of `handgram4`, with two ambiguous words.
+We include `kids` as both a subject and an object in the grammar, and `will` as a verb and as a person's name.
+
+We create a similarly sized corpus, with 17380 sentences, and find very similar results to `handgram4`:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram6_17380|62.00|43.99 |59.05|46.07|100|     |       |
+
+
