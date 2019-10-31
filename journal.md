@@ -455,4 +455,6 @@ F1 score [%]
 |--------|----------|------|-----|-----|-----|-----|-------|
 |handgram6_17380|62.00|43.99 |59.05|46.07|100|     |       |
 
-
+***************************************
+[handgram7](data/handgram7.grammar) has the same grammar structure as `handgram5`, but we added 5 ambiguous words.
+One of those words, `punk`, functions in three different classes: as a noun (subject only), a verb, and an adjective.
