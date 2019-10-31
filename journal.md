@@ -458,3 +458,21 @@ F1 score [%]
 ***************************************
 [handgram7](data/handgram7.grammar) has the same grammar structure as `handgram5`, but we added 5 ambiguous words.
 One of those words, `punk`, functions in three different classes: as a noun (subject only), a verb, and an adjective.
+To make these ambiguities work, some of the sentences have minor grammatical errors, but they can be understood, e.g. `our kids red your extremely punk brains`, where `red` should be `read`.
+
+We create a corpus with 18181 sentences, which results in:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram7_18181|70.33|52.43|67.92|56.32|99.85/99.69|     |       |
+
+These results are very close to the ones from `handgram5`, but for the first time the learned grammars don't produce perfect parses (excepting those rangram corpora with crossing links, of course).
+
+****************************************
+We now introduce even more ambiguity to test the `grammar-learner`.
+The resulting sentences won't make very good sense in English now, but we do this exercise to test the performance of the GL.
+
+
+
