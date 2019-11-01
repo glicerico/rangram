@@ -1,0 +1,36 @@
+
+% HAND-CRAFTED GRAMMAR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Class: 0
+kids quite humanoids punk will:
+(C0_1+) or (C5_0- & C0_1+) or (C3_0- & C5_0- & C0_1+) or (C0_6+) or (C5_0- & C0_6+) or (C3_0- & C5_0- & C0_6+);
+
+% Class: 1
+saw ignore smuggle punk red:
+(C0_1-) or (C0_1- & C1_2+) or (C0_1- & C1_4+) or (C0_1- & C1_2+ & C1_4+) or (C6_1-) or (C0_1- & C1_2+) or (C6_1- & C1_4+) or (C6_1- & C1_2+ & C1_4+);
+
+% Class: 2
+cakes brains nachos kids saw:
+(C1_2-) or (C5_2- & C1_2-) or (C3_2- & C5_2- & C1_2-);
+
+% Class: 3
+red quite ancient nachos punk:
+(C3_0+) or (C7_3- & C3_0+) or (C3_2+) or (C7_3- & C3_2+);
+
+% Class: 4
+quickly ungracefully aptly sporadically extremely:
+(C1_4-) or (C7_4- & C1_4-);
+
+% Class: 5
+the some our my nachos:
+(C5_0+) or (C5_2+);
+
+% Class: 6
+will can may shall quite:
+(C0_6- & C6_1+);
+
+% Class: 7
+very somewhat extremely really quite:
+(C7_3+) or (C7_4+);
+
