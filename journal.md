@@ -427,7 +427,7 @@ F1 score [%]
 |--------|----------|------|-----|-----|-----|
 |handgram5_9388|71.14|52.92 |75.8|61.67|100|
 
-It's interesting to see better results in every parse, so we wonder if adding more sentences to the corpus could change this.
+It's interesting to see better results in every set of parses, so we wonder if adding more sentences to the corpus could change this.
 A 16437-sentence corpus gives quites simlar results:
 
 F1 score [%]
@@ -441,8 +441,10 @@ Hence, given that only novel sentences are added to the corpus, we could be taki
 This is equal to saying that, when asked for a fixed number of sentences, our `corpus_generator` produces a more complete corpus for `handgram4` than for `handgram5`, and because of the bias towards simpler structures, it means the latter will be more sequential.
 
 **************************************
+## Introducing polysemy
 Given that these grammars seem easy for the `grammar-learner`, we proceed to introduce polysemy.
 Polysemy is a feature of natural languages that is hard to handle in NLP systems.
+
 Here, we start with a simple case, just using a couple words in two different categories.
 [handgram6](data/handgram6.grammar) is a replica of `handgram4`, with two ambiguous words.
 We include `kids` as both a subject and an object in the grammar, and `will` as a verb and as a person's name.
@@ -458,7 +460,7 @@ F1 score [%]
 ***************************************
 [handgram7](data/handgram7.grammar) has the same grammar structure as `handgram5`, but we added 5 ambiguous words.
 One of those words, `punk`, functions in three different classes: as a noun (subject only), a verb, and an adjective.
-To make these ambiguities work, some of the sentences have minor grammatical errors, but they can be understood, e.g. `our kids red your extremely punk brains`, where `red` should be `read`.
+To make these ambiguities work, some of the sentences have minor grammatical errors, but they can be understood, e.g. `our kids red your extremely punk brains`, where `red` should be understood as the verb `read`.
 
 We create a corpus with 18181 sentences, which results in:
 
@@ -468,10 +470,10 @@ F1 score [%]
 |--------|----------|------|-----|-----|-----|
 |handgram7_18181|70.33|52.43|67.92|56.32|99.85/99.69|
 
-These results are very close to the ones from `handgram5`, but for the first time the learned grammars don't produce perfect parses (excepting those rangram corpora with crossing links, of course).
+These results are very close to the ones from `handgram5`, but for the first time the learned grammars don't produce perfect parses (excepting those rangram corpora with crossing links from `rangram2`, of course).
 
 ****************************************
-We now introduce even more ambiguity to test the `grammar-learner` in [handgram8](data/handgram8.grammar)
+We now introduce even more ambiguity to test the `grammar-learner` in [handgram8](data/handgram8.grammar).
 The resulting sentences won't make very good sense in English now, but we do this exercise to test the performance of the GL.
 
 F1 score [%]
