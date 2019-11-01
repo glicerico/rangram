@@ -493,4 +493,68 @@ F1 score [%]
 
 The results are quite similar to the above, so we can be confident the increased polysemy deteriorated the `grammar-learner` performance, although only slightly.
 
+## Evaluating with large sparsity
+
+When using real-world corpora, the amount of grammatical constructions observed is really sparse in the space of all possible ones.
+This is a common problem in NLP, and probably the source of problems with our processing methods on real-world corpora.
+To test this with our small grammars, we create a very small `handgram8` corpus with only 100 sentences:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram8_100|71.29|52.81|65.73|56.69|35.33/49.33|
+
+Interestingly, the parsers don't suffer from this small corpus.
+However, the `grammar-learner` does perform a lot worse.
+It's relevant to note that parseability of this corpus also dropped to 38/52% for each of the GL methods, respectively.
+
+Increasing the size of the corpus by 10, we get:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram8_1000|71.98|53.33|66.34|55.9|87.92/87.3|
+
+With improved `grammar-learner` results.
+Parseability here is 89/86% respectively.
+It is clear that the corpus size is very relevant for to learn the grammar with these methods.
+
+********************************
+We try the same experiment with a small corpus from the non-ambiguous grammar `handgram5`:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram5_100|74.85|52.92|74.85|66.25|42.45/88.27|
+
+In this case, both `stream-parser` and `grammar-learner` were affected.
+The `stream-parser` is no longer capable of performing better than `sequential`.
+GL, on its part, does quite decently in its ALE variant, even for such a small corpus.
+
+A corpus with 1000 sentences gives us:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram5_1000|72.35|54.61|72.52|63.79|95.42/99.97|
+
+which again shows the problem that `grammar-learner` has with high-sparsity.
+
+************************
+## Discussion
+After the above experiments, we can say:
+- The `grammar-learner` works very well in the performed experiments, as long as sparsity is low.
+- High sparsity deeply affects the performance of the `grammar-learner`, and to some degree also that of the parsers.
+- The parsing methods suffer when polysemy is present.
+- A method to better handle sparsity in our methods is needed.
+- As long as there is no polysemy, and sparsity is low, the `stream-parser` performs better than the `sequential` baseline for the analyzed corpora.
+- When polysemy is introduced, `stream-parser` does worse than `sequential`.
+- When the `stream-parser` parses are worse than `sequential`, the best results are for "almost sequential" parses (`winParse=1`).
+When `stream-parser` beats `sequential`, the best-performing parameters tend to have higher `winObserve` and `winParse` values (less sequential), implying that some structure was learned by it.
+- The `ULL parser` isn't able to score better than sequential in any of the studied cases.
+
 
