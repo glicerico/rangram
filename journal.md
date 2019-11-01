@@ -101,7 +101,7 @@ For the SP, we currently explore two parameters: the size of the observation win
 Currently, there is no implemented weighting related to distance for word-pairs counting.
 By using the [stream_evaluate](https://github.com/glicerico/stream-parser/blob/master/src/scripts/stream_evaluate.sh) script, we can use a range of values for winObserve and winParse easily.
 
-Guided by experiments performed with the [ULLP](https://docs.google.com/spreadsheets/d/1TPbtGrqZ7saUHhOIi5yYmQ9c-cvVlAGqY14ATMPVCq4/edit#gid=963717716) in other corpora, we focus our attention to its window-based method (win=6) with distance weight for calculating PMI, and no distance-weight when MST-parsing.
+Guided by [experiments performed with the ULLP](https://docs.google.com/spreadsheets/d/1TPbtGrqZ7saUHhOIi5yYmQ9c-cvVlAGqY14ATMPVCq4/edit#gid=963717716) in other corpora, we focus our attention to its window-based method (win=6) with distance weight for calculating PMI, and no distance-weight when MST-parsing.
 It's worth noting that the `ULL parser` includes a `###LEFT-WALL###` token, comparable to the `root` node in other grammar formalisms.
 This token will be ignored in the evaluation, but it may affect the structure of the possible parses, as long as it links to anything other than the first word in a sentence.
 
@@ -170,29 +170,29 @@ had been noticed in the past (referred above).
 It produced ungrammatical sentences, and thus affected all results above.
 The description of the evaluation methods is still valid, only the numbers are incorrect.
 
-Here's a summary of the re-evaluation of methods using handgram1.
+Here's a summary of the re-evaluation of methods using [handgram1](data/handgram1.grammar).
 
 ************************************
 
-First, it should be mentioned that the grammar handgram1.grammar was improved slightly after the experiments above.
+First, it should be mentioned that the grammar `handgram1.grammar` was improved slightly after the experiments above.
 In its current form, it allows for a maximum of 48 unique sentences, all of which are produced by the corpus generator when asked for 200 sentences.
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL  |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|----|-----|-------|
-|handgram1|69.7     |57.56  |69.7|50.99|100 |     |       |
+|        |Sequential|Random| SP  |ULLP |GL  |
+|--------|----------|------|-----|-----|----|
+|handgram1|69.7     |57.56  |69.7|50.99|100 |
 
 The results from the fixed corpus generator for `handgram1` are in general better than the past ones, but the relative performance of the methods didn't change greatly.
-The best parsing result is still `sequential` parsing, imitated by the `stream-parser`, when it produces sequential parses.
+The best parsing result is still `sequential` parsing, imitated by the `stream-parser`, when it produces sequential parses (`winParse=1`).
 However, the distribution of results from `stream-parser` did change slightly from the past one (image above).
 Here's the corresponding image for this remake:
 
 ![F1 scores for handgram1 processed with SP](results/plots/handgram1_48s_f1score.png)
 
 Interestingly, the results for the `ULL parser` decreased.
-The `grammar-learner`, on the other hand, achieved perfect score, and now produces the correct grammar;
-now that the corpus is correctly generated from the grammar, GL can learn it right.
+The `grammar-learner`, on the other hand, achieved perfect score, and now produces the correct grammar.
+Now that the corpus is correctly generated from the grammar, GL can learn it right.
 We didn't perform `SP+GL` or `ULLP+GL` experiments this time, expecting them to show a similar trend.
  
 **************************************** 
@@ -204,9 +204,9 @@ The results are:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram0|93.75     |55.19|93.75|93.75|100  |     |   |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram0|93.75     |55.19|93.75|93.75|100  |
 
 All the learned parses are sequential, and this score as good as that baseline.
 The `grammar-learner` again learns the proper grammar, though.
@@ -230,9 +230,9 @@ Processing with the different methods, we obtain the following results:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram1|67.03     |54.05 |80.65|48.75|100  |     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram1|67.03     |54.05 |80.65|48.75|100  |
 
 First thing to notice here is that the `sequential` parse result is surpassed for the first time.
 The `stream-parser` manages to score better, and not only in one or two parameter combination: it actually beats the baseline in every case.
@@ -251,26 +251,26 @@ These are the obtained results (update: these results from fractions of rangram1
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram1_half|71.05  |56.51 |81.7|58.74|100  |     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram1_half|71.05  |56.51 |81.7|58.74|100  |
 
 Again, cutting the corpus size to one quarter of the complete one, we get:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram1_quarter|72.06     |57.61 |82.04|60.75|100  |     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram1_quarter|72.06     |57.61 |82.04|60.75|100  |
 
 Given the trend, we can't but keep going. 
 One tenth of the complete corpus gives:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram1_tenth|71.03     |57.46 |76.15|62.31|100/98.85  |     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram1_tenth|71.03     |57.46 |76.15|62.31|100/98.85  |
 
 There is a small fluctuation in every score, but the one that stands out is the `ULL parser` one, which increases more than 13% as we reduce the corpus size.
 Taking a look at the ULL parses, we note that for the complete corpus, only one `###LEFT-WALL###` link is created per sentence (which is ignored during evaluation).
@@ -296,17 +296,17 @@ In this case, the results are as follows:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram2|52.49     |34.67 |54.78|55.31|75.08|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram2|52.49     |34.67 |54.78|55.31|75.08|
 
 Since this is a very incomplete corpus, we test by doubling its size (it has to be regenerated, so it doesn't necessarily include the same sentences as the first corpus):
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram2_double|51.92|34.05 |54.43|55.15|74.38|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram2_double|51.92|34.05 |54.43|55.15|74.38|
 
 The results did not change much with double corpus size.
 
@@ -322,9 +322,9 @@ Results after processing are:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram2|54.87|45.33|53.8|37.55|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram2|54.87|45.33|53.8|37.55|100|
 
 The scores are considerably lower than those of `handgram1`, except for the `grammar-learner`.
 This implies that more vocabulary, or at least the vocabulary distribution assigned to this grammar, makes the complete corpus less sequential (probably by generating more samples of the sentence structures that are less sequential), and adds more noise to the word-pair mutual information.
@@ -337,17 +337,17 @@ For the sake of comparison, we run the evaluations on a tenth of the corpus:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram2_tenth|63.88|51.77 |62.94|48.2|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram2_tenth|63.88|51.77 |62.94|48.2|100|
 
 The change in the sequential score is surprising, so we repeat the evaluation for a different tenth of the corpus
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram2_tenth2|45.91|37.48 |45.98|35.92|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram2_tenth2|45.91|37.48 |45.98|35.92|100|
 
 These are clearly worse results.
 This made me wonder why the top of the corpus (the first tenth) was more sequential than the last tenth of the corpus (`handgram_tenth2`).
@@ -365,21 +365,21 @@ After the above-mentioned randomization, here are the results of evaluation usin
 
 Half of `rangram1` F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram1_half|66.82|53.0 |76.85|52.7|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram1_half|66.82|53.0 |76.85|52.7|100|
 
 Quarter of `rangram1` F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram1_quarter|66.95|53.85|79.6|53.48|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram1_quarter|66.95|53.85|79.6|53.48|100|
 
 Tenth of `rangram1` F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|rangram1_tenth|65.67|53.54 |77.48|54.04|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|rangram1_tenth|65.67|53.54 |77.48|54.04|100|
 
 These results fluctuate in a much more expected way than the evaluations on the previously-biased subcorpora.
 ******************************
@@ -391,9 +391,9 @@ We create a corpus with 14518 unique sentences, and obtain perfect grammar again
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram3|51.27|41.83 |50.65|35.96|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram3|51.27|41.83 |50.65|35.96|100|
 
 *****************************
 
@@ -408,9 +408,9 @@ From a corpus with 17380 sentences, we get:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram4|61.88|44.01 |64.92|46.01|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram4|61.88|44.01 |64.92|46.01|100|
 
 Here, the `stream-parser` results are above `sequential`, and show a different distribution as in previous cases, where the highest scores are achieved by higher `winObserve` and `winParse`.
 ![F1 scores for handgram4 processed with SP](results/plots/handgram4_17380s_f1score.png)
@@ -423,26 +423,28 @@ Using a 9388-sentence corpus, we get the following results:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram5_9388|71.14|52.92 |75.8|61.67|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram5_9388|71.14|52.92 |75.8|61.67|100|
 
-It's interesting to see better results in every parse, so we wonder if adding more sentences to the corpus could change this.
+It's interesting to see better results in every set of parses, so we wonder if adding more sentences to the corpus could change this.
 A 16437-sentence corpus gives quites simlar results:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram5_16437|70.49|52.49 |75.59|59.99|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram5_16437|70.49|52.49 |75.59|59.99|100|
 
 A possible explanation for this could be another sentence-complexity bias: adding more words to each category means more possible sentences with the same structure.
 Hence, given that only novel sentences are added to the corpus, we could be taking many more sentences with a similar, easy-to-produce structure.
 This is equal to saying that, when asked for a fixed number of sentences, our `corpus_generator` produces a more complete corpus for `handgram4` than for `handgram5`, and because of the bias towards simpler structures, it means the latter will be more sequential.
 
 **************************************
+## Introducing polysemy
 Given that these grammars seem easy for the `grammar-learner`, we proceed to introduce polysemy.
 Polysemy is a feature of natural languages that is hard to handle in NLP systems.
+
 Here, we start with a simple case, just using a couple words in two different categories.
 [handgram6](data/handgram6.grammar) is a replica of `handgram4`, with two ambiguous words.
 We include `kids` as both a subject and an object in the grammar, and `will` as a verb and as a person's name.
@@ -451,44 +453,108 @@ We create a similarly sized corpus, with 17380 sentences, and find very similar 
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram6_17380|62.00|43.99 |59.05|46.07|100|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram6_17380|62.00|43.99 |59.05|46.07|100|
 
 ***************************************
 [handgram7](data/handgram7.grammar) has the same grammar structure as `handgram5`, but we added 5 ambiguous words.
 One of those words, `punk`, functions in three different classes: as a noun (subject only), a verb, and an adjective.
-To make these ambiguities work, some of the sentences have minor grammatical errors, but they can be understood, e.g. `our kids red your extremely punk brains`, where `red` should be `read`.
+To make these ambiguities work, some of the sentences have minor grammatical errors, but they can be understood, e.g. `our kids red your extremely punk brains`, where `red` should be understood as the verb `read`.
 
 We create a corpus with 18181 sentences, which results in:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram7_18181|70.33|52.43|67.92|56.32|99.85/99.69|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram7_18181|70.33|52.43|67.92|56.32|99.85/99.69|
 
-These results are very close to the ones from `handgram5`, but for the first time the learned grammars don't produce perfect parses (excepting those rangram corpora with crossing links, of course).
+These results are very close to the ones from `handgram5`, but for the first time the learned grammars don't produce perfect parses (excepting those rangram corpora with crossing links from `rangram2`, of course).
 
 ****************************************
-We now introduce even more ambiguity to test the `grammar-learner` in [handgram8](data/handgram8.grammar)
+We now introduce even more ambiguity to test the `grammar-learner` in [handgram8](data/handgram8.grammar).
 The resulting sentences won't make very good sense in English now, but we do this exercise to test the performance of the GL.
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram8_16450|70.36|52.18|62.8|54.97|99.4/99.28|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram8_16450|70.36|52.18|62.8|54.97|99.4/99.28|
 
 The results are practically the same as `handgram7`, with a slight decrease in both parsing and grammar learning methods.
 To make sure this decrease is not a random fluctuation, we create another similarly-sized corpus and run again:
 
 F1 score [%]
 
-|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
-|--------|----------|------|-----|-----|-----|-----|-------|
-|handgram8_16509|70.4|52.3|63.73|55.07|99.44/99.26|     |       |
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram8_16509|70.4|52.3|63.73|55.07|99.44/99.26|
 
 The results are quite similar to the above, so we can be confident the increased polysemy deteriorated the `grammar-learner` performance, although only slightly.
+
+## Evaluating with large sparsity
+
+When using real-world corpora, the amount of grammatical constructions observed is really sparse in the space of all possible ones.
+This is a common problem in NLP, and probably the source of problems with our processing methods on real-world corpora.
+To test this with our small grammars, we create a very small `handgram8` corpus with only 100 sentences:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram8_100|71.29|52.81|65.73|56.69|35.33/49.33|
+
+Interestingly, the parsers don't suffer from this small corpus.
+However, the `grammar-learner` does perform a lot worse.
+It's relevant to note that parseability of this corpus also dropped to 38/52% for each of the GL methods, respectively.
+
+Increasing the size of the corpus by 10, we get:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram8_1000|71.98|53.33|66.34|55.9|87.92/87.3|
+
+With improved `grammar-learner` results.
+Parseability here is 89/86% respectively.
+It is clear that the corpus size is very relevant for to learn the grammar with these methods.
+
+********************************
+We try the same experiment with a small corpus from the non-ambiguous grammar `handgram5`:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram5_100|74.85|52.92|74.85|66.25|42.45/88.27|
+
+In this case, both `stream-parser` and `grammar-learner` were affected.
+The `stream-parser` is no longer capable of performing better than `sequential`.
+GL, on its part, does quite decently in its ALE variant, even for such a small corpus.
+
+A corpus with 1000 sentences gives us:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |
+|--------|----------|------|-----|-----|-----|
+|handgram5_1000|72.35|54.61|72.52|63.79|95.42/99.97|
+
+which again shows the problem that `grammar-learner` has with high-sparsity.
+
+************************
+## Discussion
+After the above experiments, we can say:
+- The `grammar-learner` works very well in the performed experiments, as long as sparsity is low.
+- High sparsity deeply affects the performance of the `grammar-learner`, and to some degree also that of the parsers.
+- The parsing methods suffer when polysemy is present.
+- A method to better handle sparsity in our methods is needed.
+- As long as there is no polysemy, and sparsity is low, the `stream-parser` performs better than the `sequential` baseline for the analyzed corpora.
+- When polysemy is introduced, `stream-parser` does worse than `sequential`.
+- When the `stream-parser` parses are worse than `sequential`, the best results are for "almost sequential" parses (`winParse=1`).
+When `stream-parser` beats `sequential`, the best-performing parameters tend to have higher `winObserve` and `winParse` values (less sequential), implying that some structure was learned by it.
+- The `ULL parser` isn't able to score better than sequential in any of the studied cases.
 
 
