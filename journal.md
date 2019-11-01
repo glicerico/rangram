@@ -471,8 +471,24 @@ F1 score [%]
 These results are very close to the ones from `handgram5`, but for the first time the learned grammars don't produce perfect parses (excepting those rangram corpora with crossing links, of course).
 
 ****************************************
-We now introduce even more ambiguity to test the `grammar-learner`.
+We now introduce even more ambiguity to test the `grammar-learner` in [handgram8](data/handgram8.grammar)
 The resulting sentences won't make very good sense in English now, but we do this exercise to test the performance of the GL.
 
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram8_16450|70.36|52.18|62.8|54.97|99.4/99.28|     |       |
+
+The results are practically the same as `handgram7`, with a slight decrease in both parsing and grammar learning methods.
+To make sure this decrease is not a random fluctuation, we create another similarly-sized corpus and run again:
+
+F1 score [%]
+
+|        |Sequential|Random| SP  |ULLP |GL   |SP+GL|ULLP+GL|
+|--------|----------|------|-----|-----|-----|-----|-------|
+|handgram8_16509|70.4|52.3|63.73|55.07|99.44/99.26|     |       |
+
+The results are quite similar to the above, so we can be confident the increased polysemy deteriorated the `grammar-learner` performance, although only slightly.
 
 
