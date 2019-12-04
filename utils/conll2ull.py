@@ -7,11 +7,15 @@ import os.path
 
 
 def main(argv):
+    conll_filename = argv[0]
+    # punctuation = argv[1]  # Flag to remove punctuation
+    # max_length = argv[2]  # max length of sentences to process after punctuation removal (if any)
+
     sentence = ['ROOT']
     link_ids = []
     links = []
 
-    with open(argv[0], 'r') as fi:
+    with open(conll_filename, 'r') as fi:
         with open(argv[0] + ".ull", 'w') as fo:
             lines = fi.readlines()
             for line in lines:
@@ -24,6 +28,7 @@ def main(argv):
                     # reset arrays
                     sentence = ['ROOT']
                     link_ids = []
+                    links = []
                 else:
                     split_line = line.split('\t')
                     link_ids.append([split_line[6], split_line[0]])  # store links indexes
