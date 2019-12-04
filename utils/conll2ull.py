@@ -2,14 +2,20 @@
 # coding=utf-8
 # runs on python3
 
+
+
 import sys
 import os.path
 
 
 def main(argv):
+    """
+    Transforms dependency parses in CoNLL format to ULL format
+    """
     conll_filename = argv[0]
     # punctuation = argv[1]  # Flag to remove punctuation
     # max_length = argv[2]  # max length of sentences to process after punctuation removal (if any)
+    char_set = set()
 
     sentence = ['ROOT']
     link_ids = []
@@ -32,7 +38,12 @@ def main(argv):
                 else:
                     split_line = line.split('\t')
                     link_ids.append([split_line[6], split_line[0]])  # store links indexes
-                    sentence.append(split_line[1])  # form sentence
+                    sentence.append(split_line[1])  # build sentence array
+                    for curr_char in split_line[1]:
+                        char_set.add(curr_char)
+
+    print(char_set)
+    print(len(char_set))
 
 
 if __name__ == "__main__":
