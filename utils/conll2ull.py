@@ -49,11 +49,21 @@ def create_links(sentence, mapping, link_ids):
 def main(argv):
     """
     Transforms dependency parses in CoNLL format to ULL format
+
+    Usage: python conll2ull.py <conll_filepath> <punct_flag> <max_length>
+
+    conll_filepath:     (str) Filepath to CONLL file
+    punct_flag:         (int) Boolean flag to remove or not remove punctuation
+    max_length:         (int) Ignore sentences longer than this parameter, after punctuation removal
     """
+
+    if len(argv) < 3:
+        print("Usage: python conll2ull.py <conll_filepath> <punct_flag> <max_length>")
+
     conll_filename = argv[0]
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
     max_length = int(argv[2])  # max length of sentences to process after punctuation removal (if any)
-    print(punct_flag)
+    print(f"\nProcessing file {conll_filename}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
 
     num_parses = 0  # num of parses in output file
     sentence = [ROOT_WORD]
@@ -72,22 +82,26 @@ def main(argv):
                         tagged_sent = sentence
                         tagged_len = len(sentence) - 1  # Do not count ROOT_WORD
                         mapping = [i for i in range(len(sentence))]
-                    if tagged_len <= max_length:  # only print sentences within desired length
+
+                    # Only print sentences within desired length
+                    if tagged_len <= max_length:
                         links = create_links(tagged_sent, mapping, link_ids)
                         clean_sent = [word for word in tagged_sent[1:] if word != IGNORED_WORD]
                         fo.write(" ".join(clean_sent) + "\n")
                         fo.write("\n".join(links) + "\n\n")
                         num_parses += 1
+
                     # reset arrays
                     sentence = [ROOT_WORD]
                     link_ids = []
+
                 # Links are still being processed
                 else:
                     split_line = line.split('\t')
                     link_ids.append([int(split_line[6]), int(split_line[0])])  # store links indexes
                     sentence.append(split_line[1])  # build sentence array
 
-    print(f"Printed {num_parses} parses with len <= {max_length}")
+    print(f"Converted {num_parses} parses with len <= {max_length}")
 
 
 if __name__ == "__main__":
