@@ -15,11 +15,11 @@ def tag_punctuation(sentence):
     Tag every word that doesn't contain an alphanumeric character
     """
     tagged_sentence = []
-    tagged_len = 0
+    tagged_len = -1  # start negative to avoid counting the ROOT_WORD
     mapping = []
     num_punctuations = 0  # count how many tokens are punctuation
     for cnt, word in enumerate(sentence):
-        if bool(re.match('.?[A-Za-z0-9]', word)):
+        if bool(re.match('.*[A-Za-z0-9]', word)):
             tagged_sentence.append(word)
             mapping.append(cnt - num_punctuations)
             tagged_len += 1
@@ -66,7 +66,12 @@ def main(argv):
             for line in lines:
                 # Process parse when newline is found
                 if line == "\n":
-                    tagged_sent, tagged_len, mapping = tag_punctuation(sentence)
+                    if punct_flag:  # Punctuation removal is an option
+                        tagged_sent, tagged_len, mapping = tag_punctuation(sentence)
+                    else:
+                        tagged_sent = sentence
+                        tagged_len = len(sentence) - 1  # Do not count ROOT_WORD
+                        mapping = [i for i in range(len(sentence))]
                     if tagged_len <= max_length:  # only print sentences within desired length
                         links = create_links(tagged_sent, mapping, link_ids)
                         clean_sent = [word for word in tagged_sent[1:] if word != IGNORED_WORD]
