@@ -90,7 +90,7 @@ def main(argv):
                             mapping = [i for i in range(len(sentence))]
 
                         # Only print sentences within desired length
-                        if tagged_len <= max_length:
+                        if 0 < tagged_len <= max_length:
                             links = create_links(tagged_sent, mapping, link_ids)
                             clean_sent = [word for word in tagged_sent[1:] if word != IGNORED_WORD]
                             fc.write(" ".join(clean_sent) + "\n\n")  # print to corpus file
