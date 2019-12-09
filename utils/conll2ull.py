@@ -53,16 +53,16 @@ def main(argv):
     """
     Transforms dependency parses in CoNLL format to ULL format
 
-    Usage: python conll2ull.py <conll_filepath> <punct_flag> <max_length> <lower_caps>
+    Usage: python conll2ull.py <dirpath> <punct_flag> <max_length> <lower_caps>
 
-    conll_filepath:     (str) Filepath to CONLL file
+    dirpath:            (str) Directory path with CONLL files
     punct_flag:         (int) Boolean flag to remove or not remove punctuation
     max_length:         (int) Ignore sentences longer than this parameter, after punctuation removal
     lower_caps:         (int) Boolean flag to convert to lowercaps
     """
 
     if len(argv) < 4:
-        print("Usage: python conll2ull.py <conll_filepath> <punct_flag> <max_length>")
+        print("Usage: python conll2ull.py <dirpath> <punct_flag> <max_length>")
 
     dirpath = argv[0]
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
