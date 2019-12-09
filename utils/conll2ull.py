@@ -4,6 +4,7 @@
 
 import sys
 import re
+import string
 
 ROOT_WORD = "###LEFT-WALL###"
 IGNORED_WORD = "###PUNCTUATION###"
@@ -12,15 +13,17 @@ IGNORED_FLAG = -1
 
 def tag_punctuation(sentence):
     """
-    Tag every word that doesn't contain an alphanumeric character
+    Remove punctuation, and tag every token that only contains punctuation
     """
     tagged_sentence = []
     tagged_len = -1  # start negative to avoid counting the ROOT_WORD
     mapping = []
     num_punctuations = 0  # count how many tokens are punctuation
+    translator = str.maketrans('', '', string.punctuation)  # create translation table
     for cnt, word in enumerate(sentence):
-        if bool(re.match('.*[A-Za-z0-9]', word)):
-            tagged_sentence.append(word)
+        new_word = word.translate(translator)
+        if len(new_word) > 0:
+            tagged_sentence.append(new_word)
             mapping.append(cnt - num_punctuations)
             tagged_len += 1
         else:
