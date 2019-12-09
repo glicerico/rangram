@@ -50,19 +50,21 @@ def main(argv):
     """
     Transforms dependency parses in CoNLL format to ULL format
 
-    Usage: python conll2ull.py <conll_filepath> <punct_flag> <max_length>
+    Usage: python conll2ull.py <conll_filepath> <punct_flag> <max_length> <lower_caps>
 
     conll_filepath:     (str) Filepath to CONLL file
     punct_flag:         (int) Boolean flag to remove or not remove punctuation
     max_length:         (int) Ignore sentences longer than this parameter, after punctuation removal
+    lower_caps:         (int) Boolean flag to convert to lowercaps
     """
 
-    if len(argv) < 3:
+    if len(argv) < 4:
         print("Usage: python conll2ull.py <conll_filepath> <punct_flag> <max_length>")
 
     conll_filename = argv[0]
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
     max_length = int(argv[2])  # max length of sentences to process after punctuation removal (if any)
+    lower_caps = bool(int(argv[3]))  # Flag to convert to lowercaps
     print(f"\nProcessing file {conll_filename}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
 
     num_parses = 0  # num of parses in output file
@@ -71,7 +73,7 @@ def main(argv):
     links = []
 
     with open(conll_filename, 'r') as fi:
-        with open(argv[0] + ".ull", 'w') as fo:
+        with open(argv[0] + ".txt.ull", 'w') as fo:
             with open(argv[0] + ".txt", 'w') as fc:
                 lines = fi.readlines()
                 for line in lines:
@@ -99,6 +101,8 @@ def main(argv):
 
                     # Links are still being processed
                     else:
+                        if lower_caps:
+                            line = line.lower()
                         split_line = line.split('\t')
                         link_ids.append([int(split_line[6]), int(split_line[0])])  # store links indexes
                         sentence.append(split_line[1])  # build sentence array
