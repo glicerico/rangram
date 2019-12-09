@@ -3,7 +3,7 @@
 # runs on python3
 
 import sys
-import re
+import os
 import string
 
 ROOT_WORD = "###LEFT-WALL###"
@@ -64,51 +64,58 @@ def main(argv):
     if len(argv) < 4:
         print("Usage: python conll2ull.py <conll_filepath> <punct_flag> <max_length>")
 
-    conll_filename = argv[0]
+    dirpath = argv[0]
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
+    punct_str = punct_flag * 'noPunct'  # String flag
     max_length = int(argv[2])  # max length of sentences to process after punctuation removal (if any)
     lower_caps = bool(int(argv[3]))  # Flag to convert to lowercaps
-    print(f"\nProcessing file {conll_filename}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
+    lower_str = lower_caps * 'lower'
+    print(f"\nProcessing file {dirpath}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
 
     num_parses = 0  # num of parses in output file
     sentence = [ROOT_WORD]
     link_ids = []
-    links = []
 
-    with open(conll_filename, 'r') as fi:
-        with open(argv[0] + ".txt.ull", 'w') as fo:
-            with open(argv[0] + ".txt", 'w') as fc:
-                lines = fi.readlines()
-                for line in lines:
-                    # Process parse when newline is found
-                    if line == "\n":
-                        if punct_flag:  # Punctuation removal is an option
-                            tagged_sent, tagged_len, mapping = tag_punctuation(sentence)
-                        else:
-                            tagged_sent = sentence
-                            tagged_len = len(sentence) - 1  # Do not count ROOT_WORD
-                            mapping = [i for i in range(len(sentence))]
+    newdir = dirpath + '_ull_' + punct_str + str(max_length) + lower_str + '/'
+    os.mkdir(newdir)
+    os.mkdir(newdir + 'GS')
+    os.mkdir(newdir + 'corpus')
+    for conll_filename in os.scandir(dirpath):
+        if conll_filename.path.endswith('.conll') and conll_filename.is_file():
+            with open(conll_filename, 'r') as fi:
+                with open(newdir+'GS/'+conll_filename.name + ".txt.ull", 'w') as fo:
+                    with open(newdir+'corpus/'+conll_filename.name + ".txt", 'w') as fc:
+                        lines = fi.readlines()
+                        for line in lines:
+                            # Process parse when newline is found
+                            if line == "\n":
+                                if punct_flag:  # Punctuation removal is an option
+                                    tagged_sent, tagged_len, mapping = tag_punctuation(sentence)
+                                else:
+                                    tagged_sent = sentence
+                                    tagged_len = len(sentence) - 1  # Do not count ROOT_WORD
+                                    mapping = [i for i in range(len(sentence))]
 
-                        # Only print sentences within desired length
-                        if 0 < tagged_len <= max_length:
-                            links = create_links(tagged_sent, mapping, link_ids)
-                            clean_sent = [word for word in tagged_sent[1:] if word != IGNORED_WORD]
-                            fc.write(" ".join(clean_sent) + "\n\n")  # print to corpus file
-                            fo.write(" ".join(clean_sent) + "\n")  # print to parses file
-                            fo.write("\n".join(links) + "\n\n")
-                            num_parses += 1
+                                # Only print sentences within desired length
+                                if 0 < tagged_len <= max_length:
+                                    links = create_links(tagged_sent, mapping, link_ids)
+                                    clean_sent = [word for word in tagged_sent[1:] if word != IGNORED_WORD]
+                                    fc.write(" ".join(clean_sent) + "\n\n")  # print to corpus file
+                                    fo.write(" ".join(clean_sent) + "\n")  # print to parses file
+                                    fo.write("\n".join(links) + "\n\n")
+                                    num_parses += 1
 
-                        # reset arrays
-                        sentence = [ROOT_WORD]
-                        link_ids = []
+                                # reset arrays
+                                sentence = [ROOT_WORD]
+                                link_ids = []
 
-                    # Links are still being processed
-                    else:
-                        if lower_caps:
-                            line = line.lower()
-                        split_line = line.split('\t')
-                        link_ids.append([int(split_line[6]), int(split_line[0])])  # store links indexes
-                        sentence.append(split_line[1])  # build sentence array
+                            # Links are still being processed
+                            else:
+                                if lower_caps:
+                                    line = line.lower()
+                                split_line = line.split('\t')
+                                link_ids.append([int(split_line[6]), int(split_line[0])])  # store links indexes
+                                sentence.append(split_line[1])  # build sentence array
 
     print(f"Converted {num_parses} parses with len <= {max_length}")
 
