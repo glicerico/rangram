@@ -41,6 +41,7 @@ def create_links(sentence, mapping, link_ids):
     """
     links = []
     for link in link_ids:
+        link.sort()
         mapped_ll = mapping[link[0]]  # mapped ids (adjusting for removed punctuation)
         mapped_rl = mapping[link[1]]  # mapped ids (adjusting for removed punctuation)
         if mapped_rl != IGNORED_FLAG and mapped_ll != IGNORED_FLAG:  # discard links with punctuation
@@ -115,7 +116,8 @@ def main(argv):
                                 if lower_caps:
                                     line = line.lower()
                                 split_line = line.split('\t')
-                                link_ids.append([int(split_line[6]), int(split_line[0])])  # store links indexes
+                                # store ordered links indexes
+                                link_ids.append([int(split_line[6]), int(split_line[0])])
                                 sentence.append(split_line[1])  # build sentence array
 
         print(f"Converted {num_parses} parses with len <= {max_length}")
