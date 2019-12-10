@@ -15,18 +15,19 @@ def tag_punctuation(sentence):
     """
     Remove punctuation, and tag every token that only contains punctuation
     """
-    tagged_sentence = []
-    tagged_len = -1  # start negative to avoid counting the ROOT_WORD
-    mapping = []
+    tagged_len = 0
     num_punctuations = 0  # count how many tokens are punctuation
+    tagged_sentence = [sentence[0]]  # keep punctuation in ROOT_WORD
+    mapping = [0]
     translator = str.maketrans('', '', string.punctuation)  # create translation table
-    for cnt, word in enumerate(sentence):
+
+    for cnt, word in enumerate(sentence[1:]):
         new_word = word.translate(translator)
-        if len(new_word) > 0:
+        if len(new_word) > 0:  # token that contains non-punctuation characters
             tagged_sentence.append(new_word)
-            mapping.append(cnt - num_punctuations)
+            mapping.append(cnt + 1 - num_punctuations)
             tagged_len += 1
-        else:
+        else:  # removed all chars from token
             tagged_sentence.append(IGNORED_WORD)
             num_punctuations += 1
             mapping.append(IGNORED_FLAG)
@@ -76,7 +77,7 @@ def main(argv):
     sentence = [ROOT_WORD]
     link_ids = []
 
-    newdir = dirpath + '_ull_' + punct_str + str(max_length) + lower_str + '/'
+    newdir = dirpath + '_ull_' + punct_str + '_' + str(max_length) + '_' + lower_str + '/'
     os.mkdir(newdir)
     os.mkdir(newdir + 'GS')
     os.mkdir(newdir + 'corpus')
@@ -117,7 +118,7 @@ def main(argv):
                                 link_ids.append([int(split_line[6]), int(split_line[0])])  # store links indexes
                                 sentence.append(split_line[1])  # build sentence array
 
-    print(f"Converted {num_parses} parses with len <= {max_length}")
+        print(f"Converted {num_parses} parses with len <= {max_length}")
 
 
 if __name__ == "__main__":
