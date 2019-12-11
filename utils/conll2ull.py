@@ -11,23 +11,21 @@ IGNORED_WORD = "###PUNCTUATION###"
 IGNORED_FLAG = -1
 
 
-def tag_punctuation(sentence):
+def tag_punctuation(sentence, pos_list):
     """
-    Remove punctuation, and tag every token that only contains punctuation
+    Remove punctuation tokens, guided by the tags in the conll file
     """
     tagged_len = 0
     num_punctuations = 0  # count how many tokens are punctuation
-    tagged_sentence = [sentence[0]]  # keep punctuation in ROOT_WORD
-    mapping = [0]
-    translator = str.maketrans('', '', string.punctuation)  # create translation table
+    tagged_sentence = []
+    mapping = []
 
-    for cnt, word in enumerate(sentence[1:]):
-        new_word = word.translate(translator)
-        if len(new_word) > 0:  # token that contains non-punctuation characters
-            tagged_sentence.append(new_word)
-            mapping.append(cnt + 1 - num_punctuations)
+    for cnt, word in enumerate(sentence):
+        if pos_list[cnt] != 'p':  # non-punctuation token
+            tagged_sentence.append(word)
+            mapping.append(cnt - num_punctuations)
             tagged_len += 1
-        else:  # removed all chars from token
+        else:  # punctuation token
             tagged_sentence.append(IGNORED_WORD)
             num_punctuations += 1
             mapping.append(IGNORED_FLAG)
@@ -74,9 +72,10 @@ def main(argv):
     lower_str = lower_caps * 'lower'
     print(f"\nProcessing file {dirpath}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
 
-    num_parses = 0  # num of parses in output file
+    num_parses = 0  # Num of parses in output file
     sentence = [ROOT_WORD]
-    link_ids = []
+    pos_list = ['ROOT']  # List with POS for each word, to detect punctuation
+    link_ids = []  # List with word ids for each link
 
     newdir = dirpath + '_ull_' + punct_str + '_' + str(max_length) + '_' + lower_str + '/'
     os.mkdir(newdir)
@@ -92,7 +91,7 @@ def main(argv):
                             # Process parse when newline is found
                             if line == "\n":
                                 if punct_flag:  # Punctuation removal is an option
-                                    tagged_sent, tagged_len, mapping = tag_punctuation(sentence)
+                                    tagged_sent, tagged_len, mapping = tag_punctuation(sentence, pos_list)
                                 else:
                                     tagged_sent = sentence
                                     tagged_len = len(sentence) - 1  # Do not count ROOT_WORD
@@ -110,6 +109,7 @@ def main(argv):
                                 # reset arrays
                                 sentence = [ROOT_WORD]
                                 link_ids = []
+                                pos_list = ['ROOT']
 
                             # Links are still being processed
                             else:
@@ -118,6 +118,7 @@ def main(argv):
                                 split_line = line.split('\t')
                                 # store ordered links indexes
                                 link_ids.append([int(split_line[6]), int(split_line[0])])
+                                pos_list.append(split_line[7])
                                 sentence.append(split_line[1])  # build sentence array
 
         print(f"Converted {num_parses} parses with len <= {max_length}")
