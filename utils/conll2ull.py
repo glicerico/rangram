@@ -21,7 +21,7 @@ def tag_punctuation(sentence, pos_list):
     mapping = []
 
     for cnt, word in enumerate(sentence):
-        if pos_list[cnt] != 'p':  # non-punctuation token
+        if pos_list[cnt] not in ['p', 'PUNCT']:  # non-punctuation token
             tagged_sentence.append(word)
             mapping.append(cnt - num_punctuations)
             tagged_len += 1
