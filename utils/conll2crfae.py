@@ -17,15 +17,18 @@ def tag_punctuation(sentence, pos_list):
     tagged_len = 0
     num_punctuations = 0  # count how many tokens are punctuation
     tagged_sentence = []
+    tagged_pos = []
     mapping = []
 
     for cnt, word in enumerate(sentence):
         if pos_list[cnt] not in ['p', 'punct']:  # non-punctuation token
             tagged_sentence.append(word)
+            tagged_pos.append(pos_list[cnt])
             mapping.append(cnt - num_punctuations)
             tagged_len += 1
         else:  # punctuation token
             tagged_sentence.append(IGNORED_WORD)
+            tagged_pos.append(IGNORED_WORD)
             num_punctuations += 1
             mapping.append(IGNORED_FLAG)
 
@@ -100,11 +103,14 @@ def main(argv):
 
                                 # Only print sentences within desired length
                                 if 0 < tagged_len <= max_length:
-                                    links = create_links(tagged_sent, mapping, link_ids)
                                     clean_sent = [word for word in tagged_sent[1:] if word != IGNORED_WORD]
+                                    clean_pos = [pos for pos in tagged_pos[1:] if pos != IGNORED_WORD]
+                                    clean_heads = [head for head in tagged_heads[1:] if head != IGNORED_WORD]
                                     fc.write(" ".join(clean_sent) + "\n\n")  # print to corpus file
-                                    fo.write(" ".join(clean_sent) + "\n")  # print to parses file
-                                    fo.write("\n".join(links) + "\n\n")
+                                    fo.write("\t".join(clean_sent) + "\n")  # print to parses file
+                                    fo.write("\t".join(clean_pos) + "\n")  # CRFAE needs POS tags twice
+                                    fo.write("\t".join(clean_pos) + "\n")  # CRFAE needs POS tags twice
+                                    fo.write("\t".join(clean_heads) + "\n")
                                     num_parses += 1
 
                                 # reset arrays
