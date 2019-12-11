@@ -70,7 +70,7 @@ def main(argv):
     max_length = int(argv[2])  # max length of sentences to process after punctuation removal (if any)
     lower_caps = bool(int(argv[3]))  # Flag to convert to lowercaps
     lower_str = lower_caps * 'lower'
-    print(f"\nProcessing file {dirpath}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
+    print(f"\nProcessing files in {dirpath}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
 
     num_parses = 0  # Num of parses in output file
     sentence = [ROOT_WORD]
@@ -78,9 +78,11 @@ def main(argv):
     link_ids = []  # List with word ids for each link
 
     newdir = dirpath + '_ull_' + punct_str + '_' + str(max_length) + '_' + lower_str + '/'
-    os.mkdir(newdir)
-    os.mkdir(newdir + 'GS')
-    os.mkdir(newdir + 'corpus')
+    if not os.path.isdir(newdir):
+        os.mkdir(newdir)
+        os.mkdir(newdir + 'GS')
+        os.mkdir(newdir + 'corpus')
+
     for conll_filename in os.scandir(dirpath):
         if conll_filename.path.endswith('.conll') and conll_filename.is_file():
             with open(conll_filename, 'r') as fi:
@@ -121,7 +123,7 @@ def main(argv):
                                 pos_list.append(split_line[7])
                                 sentence.append(split_line[1])  # build sentence array
 
-        print(f"Converted {num_parses} parses with len <= {max_length}")
+    print(f"Converted a total of {num_parses} parses with len <= {max_length}")
 
 
 if __name__ == "__main__":
