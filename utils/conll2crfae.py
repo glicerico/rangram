@@ -19,7 +19,6 @@ def tag_punctuation(sentence, pos_list, heads_list):
     tagged_sentence = []
     clean_pos = []
     clean_heads = []
-    mapping = []
 
     for cnt, word in enumerate(sentence):
         if pos_list[cnt] not in ['p', 'punct']:  # non-punctuation token
