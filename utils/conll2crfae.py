@@ -19,14 +19,14 @@ def tag_punctuation(sentence, pos_list, heads_list):
     clean_sent = []
     clean_pos = []
     clean_heads = []
-    mapping = []
+    mapping = [0]
 
     # Generate lists of words, POS, and mapping between original and cleaned indexes
     for cnt, word in enumerate(sentence):
-        if pos_list[cnt] not in ['p', 'punct']:  # non-punctuation token
+        if pos_list[cnt] not in ['p', 'PUNCT']:  # non-punctuation token
             clean_sent.append(word)
             clean_pos.append(pos_list[cnt])
-            mapping.append(cnt - num_punctuations)
+            mapping.append(cnt + 1 - num_punctuations)
             tagged_len += 1
         else:  # token is punctuation
             num_punctuations += 1
@@ -34,7 +34,7 @@ def tag_punctuation(sentence, pos_list, heads_list):
 
     # Generate list of heads with new indexes
     for cnt, head in enumerate(heads_list):
-        if mapping[cnt] != IGNORED_FLAG:
+        if mapping[cnt + 1] != IGNORED_FLAG:
             clean_heads.append(mapping[head])
 
     return clean_sent, tagged_len, mapping, clean_pos, clean_heads
@@ -82,15 +82,15 @@ def main(argv):
                     with open(newdir + 'corpus/' + conll_filename.name + ".txt", 'w') as fc:
                         lines = fi.readlines()
                         for line in lines:
+                            split_line = line.split('\t')
                             # Skip comments
                             if line.startswith("#"):
                                 pass
                             # Process parse when newline is found
                             elif line == "\n":
                                 if punct_flag:  # Punctuation removal is an option
-                                    clean_sent, tagged_len, mapping, clean_pos, clean_heads = tag_punctuation(sentence,
-                                                                                                               pos_list,
-                                                                                                               heads_list)
+                                    clean_sent, tagged_len, mapping, clean_pos, clean_heads = \
+                                        tag_punctuation(sentence, pos_list, heads_list)
                                 else:
                                     clean_sent = sentence
                                     tagged_len = len(sentence) - 1  # Do not count ROOT_WORD
@@ -112,14 +112,12 @@ def main(argv):
                                 heads_list = []
 
                             # Links are still being processed
-                            else:
+                            elif len(split_line[0]) < 3:  # Discards some copied words in UD_Dutch corpus
                                 if lower_caps:
-                                    line = line.lower()
-                                split_line = line.split('\t')
-                                if len(split_line[0]) < 3:  # Discards some copied words in UD_Dutch corpus
-                                    sentence.append(split_line[1])  # build sentence array
-                                    pos_list.append(split_line[3])
-                                    heads_list.append(int(split_line[6]))
+                                    split_line[1].lower()
+                                sentence.append(split_line[1])  # build sentence array
+                                pos_list.append(split_line[3])
+                                heads_list.append(int(split_line[6]))
 
     print(f"Converted a total of {num_parses} parses with len <= {max_length}")
 
