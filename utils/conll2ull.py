@@ -76,6 +76,7 @@ def main(argv):
     pos_list = ['ROOT']  # List with POS for each word, to detect punctuation
     link_ids = []  # List with word ids for each link
 
+    # Build directory structure for converted corpus parses
     newdir = dirpath + '_ull_' + punct_str + '_' + str(max_length) + '_' + lower_str + '/'
     if not os.path.isdir(newdir):
         os.mkdir(newdir)
