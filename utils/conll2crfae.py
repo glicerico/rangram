@@ -114,7 +114,7 @@ def main(argv):
                             # Links are still being processed
                             elif len(split_line[0]) < 3:  # Discards some copied words in UD_Dutch corpus
                                 if lower_caps:
-                                    split_line[1].lower()
+                                    split_line[1] = split_line[1].lower()
                                 sentence.append(split_line[1])  # build sentence array
                                 pos_list.append(split_line[3])
                                 heads_list.append(int(split_line[6]))
