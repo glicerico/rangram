@@ -17,15 +17,18 @@ def tag_punctuation(sentence, pos_list):
     tagged_len = 0
     num_punctuations = 0  # count how many tokens are punctuation
     tagged_sentence = []
+    tagged_pos = []
     mapping = []
 
     for cnt, word in enumerate(sentence):
-        if pos_list[cnt] not in ['p', 'PUNCT']:  # non-punctuation token
+        if pos_list[cnt] not in ['p', 'punct']:  # non-punctuation token
             tagged_sentence.append(word)
+            tagged_pos.append(pos_list[cnt])
             mapping.append(cnt - num_punctuations)
             tagged_len += 1
         else:  # punctuation token
             tagged_sentence.append(IGNORED_WORD)
+            tagged_pos.append(IGNORED_WORD)
             num_punctuations += 1
             mapping.append(IGNORED_FLAG)
 
@@ -50,9 +53,9 @@ def create_links(sentence, mapping, link_ids):
 
 def main(argv):
     """
-    Transforms dependency parses in CoNLL format to ULL format
+    Transforms dependency parses in CoNLL format to CRFAE parser input format
 
-    Usage: python conll2ull.py <dirpath> <punct_flag> <max_length> <lower_caps>
+    Usage: python conll2crfae.py <dirpath> <punct_flag> <max_length> <lower_caps>
 
     dirpath:            (str) Directory path with CONLL files
     punct_flag:         (int) Boolean flag to remove or not remove punctuation
@@ -61,7 +64,7 @@ def main(argv):
     """
 
     if len(argv) < 4:
-        print("Usage: python conll2ull.py <dirpath> <punct_flag> <max_length>")
+        print("Usage: python conll2crfae.py <dirpath> <punct_flag> <max_length>")
 
     dirpath = argv[0]
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
@@ -76,7 +79,7 @@ def main(argv):
     pos_list = ['ROOT']  # List with POS for each word, to detect punctuation
     link_ids = []  # List with word ids for each link
 
-    newdir = dirpath + '_ull_' + punct_str + '_' + str(max_length) + '_' + lower_str + '/'
+    newdir = dirpath + '_crfae_' + punct_str + '_' + str(max_length) + '_' + lower_str + '/'
     if not os.path.isdir(newdir):
         os.mkdir(newdir)
         os.mkdir(newdir + 'GS')
@@ -85,7 +88,7 @@ def main(argv):
     for conll_filename in os.scandir(dirpath):
         if conll_filename.path.endswith('.conll') and conll_filename.is_file():
             with open(conll_filename, 'r') as fi:
-                with open(newdir+'GS/'+conll_filename.name + ".txt.ull", 'w') as fo:
+                with open(newdir+'GS/'+conll_filename.name + ".txt.crfae", 'w') as fo:
                     with open(newdir+'corpus/'+conll_filename.name + ".txt", 'w') as fc:
                         lines = fi.readlines()
                         for line in lines:
@@ -100,11 +103,14 @@ def main(argv):
 
                                 # Only print sentences within desired length
                                 if 0 < tagged_len <= max_length:
-                                    links = create_links(tagged_sent, mapping, link_ids)
                                     clean_sent = [word for word in tagged_sent[1:] if word != IGNORED_WORD]
+                                    clean_pos = [pos for pos in tagged_pos[1:] if pos != IGNORED_WORD]
+                                    clean_heads = [head for head in tagged_heads[1:] if head != IGNORED_WORD]
                                     fc.write(" ".join(clean_sent) + "\n\n")  # print to corpus file
-                                    fo.write(" ".join(clean_sent) + "\n")  # print to parses file
-                                    fo.write("\n".join(links) + "\n\n")
+                                    fo.write("\t".join(clean_sent) + "\n")  # print to parses file
+                                    fo.write("\t".join(clean_pos) + "\n")  # CRFAE needs POS tags twice
+                                    fo.write("\t".join(clean_pos) + "\n")  # CRFAE needs POS tags twice
+                                    fo.write("\t".join(clean_heads) + "\n")
                                     num_parses += 1
 
                                 # reset arrays
@@ -119,7 +125,7 @@ def main(argv):
                                 split_line = line.split('\t')
                                 # store ordered links indexes
                                 link_ids.append([int(split_line[6]), int(split_line[0])])
-                                pos_list.append(split_line[7])
+                                pos_list.append(split_line[3])
                                 sentence.append(split_line[1])  # build sentence array
 
     print(f"Converted a total of {num_parses} parses with len <= {max_length}")
