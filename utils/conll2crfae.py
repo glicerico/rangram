@@ -16,23 +16,29 @@ def tag_punctuation(sentence, pos_list, heads_list):
     """
     tagged_len = 0
     num_punctuations = 0  # count how many tokens are punctuation
-    tagged_sentence = []
+    clean_sent = []
     clean_pos = []
     clean_heads = []
+    mapping = []
 
+    # Generate lists of words, POS, and mapping between original and cleaned indexes
     for cnt, word in enumerate(sentence):
         if pos_list[cnt] not in ['p', 'punct']:  # non-punctuation token
-            tagged_sentence.append(word)
+            clean_sent.append(word)
             clean_pos.append(pos_list[cnt])
-            clean_heads.append(heads_list[cnt])
             mapping.append(cnt - num_punctuations)
             tagged_len += 1
         else:  # token is punctuation
-            tagged_sentence.append(IGNORED_WORD)
             num_punctuations += 1
             mapping.append(IGNORED_FLAG)
 
-    return tagged_sentence, tagged_len, mapping, clean_pos, clean_heads
+    # Generate list of heads with new indexes
+    for cnt, head in enumerate(heads_list):
+        if mapping[cnt] != IGNORED_FLAG:
+            clean_heads.append(mapping[head])
+
+    return clean_sent, tagged_len, mapping, clean_pos, clean_heads
+
 
 def main(argv):
     """
@@ -72,8 +78,8 @@ def main(argv):
     for conll_filename in os.scandir(dirpath):
         if conll_filename.path.endswith('.conll') and conll_filename.is_file():
             with open(conll_filename, 'r') as fi:
-                with open(newdir+'GS/'+conll_filename.name + ".txt.crfae", 'w') as fo:
-                    with open(newdir+'corpus/'+conll_filename.name + ".txt", 'w') as fc:
+                with open(newdir + 'GS/' + conll_filename.name + ".txt.crfae", 'w') as fo:
+                    with open(newdir + 'corpus/' + conll_filename.name + ".txt", 'w') as fc:
                         lines = fi.readlines()
                         for line in lines:
                             # Skip comments
@@ -82,15 +88,17 @@ def main(argv):
                             # Process parse when newline is found
                             elif line == "\n":
                                 if punct_flag:  # Punctuation removal is an option
-                                    tagged_sent, tagged_len, mapping, clean_pos, clean_heads = tag_punctuation(sentence, pos_list, heads_list)
+                                    clean_sent, tagged_len, mapping, clean_pos, clean_heads = tag_punctuation(sentence,
+                                                                                                               pos_list,
+                                                                                                               heads_list)
                                 else:
-                                    tagged_sent = sentence
+                                    clean_sent = sentence
                                     tagged_len = len(sentence) - 1  # Do not count ROOT_WORD
                                     clean_pos = pos_list
 
                                 # Only print sentences within desired length
+                                clean_heads = [str(i) for i in clean_heads]
                                 if 0 < tagged_len <= max_length:
-                                    clean_sent = [word for word in tagged_sent if word != IGNORED_WORD]
                                     fc.write(" ".join(clean_sent) + "\n\n")  # print to corpus file
                                     fo.write("\t".join(clean_sent) + "\n")  # print to parses file
                                     fo.write("\t".join(clean_pos) + "\n")  # CRFAE needs POS tags twice
@@ -108,9 +116,10 @@ def main(argv):
                                 if lower_caps:
                                     line = line.lower()
                                 split_line = line.split('\t')
-                                sentence.append(split_line[1])  # build sentence array
-                                pos_list.append(split_line[3])
-                                heads_list.append(split_line[6])
+                                if len(split_line[0]) < 3:  # Discards some copied words in UD_Dutch corpus
+                                    sentence.append(split_line[1])  # build sentence array
+                                    pos_list.append(split_line[3])
+                                    heads_list.append(int(split_line[6]))
 
     print(f"Converted a total of {num_parses} parses with len <= {max_length}")
 
