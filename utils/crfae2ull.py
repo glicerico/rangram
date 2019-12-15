@@ -58,31 +58,27 @@ def main(argv):
     newdir = dirpath + '_ull_' + str(max_length) + '/'
     if not os.path.isdir(newdir):
         os.mkdir(newdir)
-        os.mkdir(newdir + 'GS')
-        os.mkdir(newdir + 'corpus')
 
     for crfae_filename in os.scandir(dirpath):
         if crfae_filename.path.endswith('.crfae') and crfae_filename.is_file():
             with open(crfae_filename, 'r') as fi:
-                with open(newdir+'GS/'+crfae_filename.name + ".txt.ull", 'w') as fo:
-                    with open(newdir+'corpus/'+crfae_filename.name + ".txt", 'w') as fc:
-                        for lines in grouper(fi, 5, ''):
-                            assert len(lines) == 5
-                            sentence = sentence + lines[0].split('\t')
-                            sentence[-1] = sentence[-1][:-1]  # Get rid of final EOL in sentence
-                            sent_len = len(sentence) - 1  # Do not count ROOT_WORD
-                            heads = lines[3].split('\t')
+                with open(newdir+crfae_filename.name + ".txt.ull", 'w') as fo:
+                    for lines in grouper(fi, 5, ''):
+                        assert len(lines) == 5
+                        sentence = sentence + lines[0].split('\t')
+                        sentence[-1] = sentence[-1][:-1]  # Get rid of final EOL in sentence
+                        sent_len = len(sentence) - 1  # Do not count ROOT_WORD
+                        heads = lines[3].split('\t')
 
-                            # Only print sentences within desired lengths
-                            if 0 < sent_len <= max_length:
-                                links = build_links(sentence, heads)
-                                fc.write(" ".join(sentence[1:]) + "\n\n")  # print to corpus file
-                                fo.write(" ".join(sentence[1:]) + "\n")  # print to parses file
-                                fo.write("\n".join(links) + "\n\n")
-                                num_parses += 1
+                        # Only print sentences within desired lengths
+                        if 0 < sent_len <= max_length:
+                            links = build_links(sentence, heads)
+                            fo.write(" ".join(sentence[1:]) + "\n")  # print to parses file
+                            fo.write("\n".join(links) + "\n\n")
+                            num_parses += 1
 
-                                # reset arrays
-                                sentence = [ROOT_WORD]
+                            # reset arrays
+                            sentence = [ROOT_WORD]
 
     print(f"Converted a total of {num_parses} parses with len <= {max_length}")
 
