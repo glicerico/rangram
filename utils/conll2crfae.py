@@ -96,6 +96,7 @@ def main(argv):
                                     clean_sent = sentence
                                     tagged_len = len(sentence) - 1  # Do not count ROOT_WORD
                                     clean_pos = pos_list
+                                    clean_heads = heads_list
 
                                 # Only print sentences within desired length
                                 clean_heads = [str(i) for i in clean_heads]
