@@ -68,15 +68,16 @@ def main(argv):
                     with open(newdir+'corpus/'+crfae_filename.name + ".txt", 'w') as fc:
                         for lines in grouper(fi, 5, ''):
                             assert len(lines) == 5
-                            sentence.append(lines[0].split('\t'))
+                            sentence = sentence + lines[0].split('\t')
+                            sentence[-1] = sentence[-1][:-1]  # Get rid of final EOL in sentence
                             sent_len = len(sentence) - 1  # Do not count ROOT_WORD
                             heads = lines[3].split('\t')
 
                             # Only print sentences within desired lengths
                             if 0 < sent_len <= max_length:
                                 links = build_links(sentence, heads)
-                                fc.write(" ".join(sentence) + "\n\n")  # print to corpus file
-                                fo.write(" ".join(sentence) + "\n")  # print to parses file
+                                fc.write(" ".join(sentence[1:]) + "\n\n")  # print to corpus file
+                                fo.write(" ".join(sentence[1:]) + "\n")  # print to parses file
                                 fo.write("\n".join(links) + "\n\n")
                                 num_parses += 1
 
