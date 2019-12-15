@@ -76,13 +76,14 @@ def main(argv):
         os.mkdir(newdir + 'corpus')
 
     for conll_filename in os.scandir(dirpath):
-        if conll_filename.path.endswith('.conll') and conll_filename.is_file():
+        if conll_filename.path.endswith('.conllu') and conll_filename.is_file():
             with open(conll_filename, 'r') as fi:
                 with open(newdir + 'GS/' + conll_filename.name + ".txt.crfae", 'w') as fo:
                     with open(newdir + 'corpus/' + conll_filename.name + ".txt", 'w') as fc:
                         lines = fi.readlines()
                         for line in lines:
                             split_line = line.split('\t')
+                            chars = '.-'  # Chars that signal specially processed words in field 0 in UD corpora
                             # Skip comments
                             if line.startswith("#"):
                                 pass
@@ -112,7 +113,8 @@ def main(argv):
                                 heads_list = []
 
                             # Links are still being processed
-                            elif len(split_line[0]) < 3:  # Discards some copied words in UD_Dutch corpus
+                            # Discards words processed in a special way in UD corpora
+                            elif all((c not in chars) for c in split_line[0]):
                                 if lower_caps:
                                     split_line[1] = split_line[1].lower()
                                 sentence.append(split_line[1])  # build sentence array
