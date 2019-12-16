@@ -84,14 +84,19 @@ def main(argv):
         os.mkdir(newdir + 'corpus')
 
     for conll_filename in os.scandir(dirpath):
-        if conll_filename.path.endswith('.conll') and conll_filename.is_file():
+        if conll_filename.path.endswith(('.conll', '.conllu')) and conll_filename.is_file():
             with open(conll_filename, 'r') as fi:
                 with open(newdir+'GS/'+conll_filename.name + ".txt.ull", 'w') as fo:
                     with open(newdir+'corpus/'+conll_filename.name + ".txt", 'w') as fc:
                         lines = fi.readlines()
                         for line in lines:
+                            split_line = line.split('\t')
+                            chars = '.-'  # Chars that signal specially processed words in field 0 in UD corpora
+                            # Skip comments
+                            if line.startswith("#"):
+                                pass
                             # Process parse when newline is found
-                            if line == "\n":
+                            elif line == "\n":
                                 if punct_flag:  # Punctuation removal is an option
                                     tagged_sent, tagged_len, mapping = tag_punctuation(sentence, pos_list)
                                 else:
@@ -114,13 +119,13 @@ def main(argv):
                                 pos_list = ['ROOT']
 
                             # Links are still being processed
-                            else:
+                            # Discards words processed in a special way in UD corpora
+                            elif all((c not in chars) for c in split_line[0]):
                                 if lower_caps:
-                                    line = line.lower()
-                                split_line = line.split('\t')
+                                    split_line[1] = split_line[1].lower()
                                 # store ordered links indexes
                                 link_ids.append([int(split_line[6]), int(split_line[0])])
-                                pos_list.append(split_line[7])
+                                pos_list.append(split_line[3])
                                 sentence.append(split_line[1])  # build sentence array
 
     print(f"Converted a total of {num_parses} parses with len <= {max_length}")
