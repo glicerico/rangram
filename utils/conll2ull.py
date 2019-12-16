@@ -14,7 +14,7 @@ def tag_punctuation(sentence, pos_list):
     """
     Remove punctuation tokens, guided by the tags in the conll file
     """
-    tagged_len = 0
+    tagged_len = -1  # To avoid counting ROOT word as a token
     num_punctuations = 0  # count how many tokens are punctuation
     tagged_sentence = []
     mapping = []
