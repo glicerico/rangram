@@ -33,9 +33,8 @@ cp -r $ULL_workdir/* .
 sed -i -e "s/cnt_mode\S*/cnt_mode=\"${cnt_mode}\"/" config/params.txt
 sed -i -e "s/cnt_reach\S*/cnt_reach=${cnt_reach}/" config/params.txt
 
-cp ../corpus/*train* beta-pages/
-cp ../corpus/*dev* beta-pages/
-cp ../corpus/*test* gamma-pages/
+cp ../corpus/* beta-pages/
+cp ../corpus/* gamma-pages/
 
 ./reset_database.sh $db_name
 rm -r mst-parses mi-pairs.txt
