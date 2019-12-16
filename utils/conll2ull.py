@@ -20,12 +20,12 @@ def tag_punctuation(sentence, pos_list):
     mapping = []
 
     for cnt, word in enumerate(sentence):
-        if pos_list[cnt] in ['p', 'PUNCT']:  # punctuation token
+        if pos_list[cnt][1] in ['p', 'PUNCT', 'punct']:  # punctuation token
             tagged_sentence.append(IGNORED_WORD)
             num_punctuations += 1
             mapping.append(IGNORED_FLAG)
         else:  # non-punctuation token
-            if pos_list[cnt] in ['NUM']:  # numeric token
+            if pos_list[cnt][0] in ['NUM']:  # numeric token
                 tagged_sentence.append("<NUM>")
             else:
                 tagged_sentence.append(word)
@@ -76,7 +76,7 @@ def main(argv):
 
     num_parses = 0  # Num of parses in output file
     sentence = [ROOT_WORD]
-    pos_list = ['ROOT']  # List with POS for each word, to detect punctuation
+    pos_list = [('ROOT', 'ROOT')]  # List with POS for each word, to detect punctuation
     link_ids = []  # List with word ids for each link
 
     # Build directory structure for converted corpus parses
@@ -119,7 +119,7 @@ def main(argv):
                                 # reset arrays
                                 sentence = [ROOT_WORD]
                                 link_ids = []
-                                pos_list = ['ROOT']
+                                pos_list = [('ROOT', 'ROOT')]
 
                             # Links are still being processed
                             # Discards words processed in a special way in UD corpora
@@ -128,7 +128,7 @@ def main(argv):
                                     split_line[1] = split_line[1].lower()
                                 # store ordered links indexes
                                 link_ids.append([int(split_line[6]), int(split_line[0])])
-                                pos_list.append(split_line[3])
+                                pos_list.append((split_line[3], split_line[7]))
                                 sentence.append(split_line[1])  # build sentence array
 
     print(f"Converted a total of {num_parses} parses with len <= {max_length}")
