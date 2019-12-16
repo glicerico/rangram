@@ -76,7 +76,7 @@ def main(argv):
         os.mkdir(newdir + 'corpus')
 
     for conll_filename in os.scandir(dirpath):
-        if conll_filename.path.endswith('.conllu') and conll_filename.is_file():
+        if conll_filename.path.endswith(('.conll', '.conllu')) and conll_filename.is_file():
             with open(conll_filename, 'r') as fi:
                 with open(newdir + 'GS/' + conll_filename.name + ".txt.crfae", 'w') as fo:
                     with open(newdir + 'corpus/' + conll_filename.name + ".txt", 'w') as fc:
