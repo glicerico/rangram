@@ -53,7 +53,7 @@ def main(argv):
     """
 
     if len(argv) < 4:
-        print("Usage: python conll2crfae.py <dirpath> <punct_flag> <max_length>")
+        print("Usage: python conll2crfae.py <dirpath> <punct_flag> <max_length> <lower_caps>")
 
     dirpath = argv[0]
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
