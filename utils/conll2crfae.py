@@ -23,9 +23,9 @@ def tag_punctuation(sentence, pos_list, heads_list):
 
     # Generate lists of words, POS, and mapping between original and cleaned indexes
     for cnt, word in enumerate(sentence):
-        if pos_list[cnt] not in ['p', 'PUNCT']:  # non-punctuation token
+        if pos_list[cnt][1] not in ['p', 'PUNCT', 'punct']:  # non-punctuation token
             clean_sent.append(word)
-            clean_pos.append(pos_list[cnt])
+            clean_pos.append(pos_list[cnt][0])
             mapping.append(cnt + 1 - num_punctuations)
             tagged_len += 1
         else:  # token is punctuation
@@ -53,7 +53,7 @@ def main(argv):
     """
 
     if len(argv) < 4:
-        print("Usage: python conll2crfae.py <dirpath> <punct_flag> <max_length>")
+        print("Usage: python conll2crfae.py <dirpath> <punct_flag> <max_length> <lower_caps>")
 
     dirpath = argv[0]
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
@@ -76,7 +76,7 @@ def main(argv):
         os.mkdir(newdir + 'corpus')
 
     for conll_filename in os.scandir(dirpath):
-        if conll_filename.path.endswith('.conllu') and conll_filename.is_file():
+        if conll_filename.path.endswith(('.conll', '.conllu')) and conll_filename.is_file():
             with open(conll_filename, 'r') as fi:
                 with open(newdir + 'GS/' + conll_filename.name + ".txt.crfae", 'w') as fo:
                     with open(newdir + 'corpus/' + conll_filename.name + ".txt", 'w') as fc:
@@ -119,7 +119,7 @@ def main(argv):
                                 if lower_caps:
                                     split_line[1] = split_line[1].lower()
                                 sentence.append(split_line[1])  # build sentence array
-                                pos_list.append(split_line[3])
+                                pos_list.append((split_line[3], split_line[7]))
                                 heads_list.append(int(split_line[6]))
 
     print(f"Converted a total of {num_parses} parses with len <= {max_length}")

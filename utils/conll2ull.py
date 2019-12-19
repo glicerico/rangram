@@ -14,20 +14,23 @@ def tag_punctuation(sentence, pos_list):
     """
     Remove punctuation tokens, guided by the tags in the conll file
     """
-    tagged_len = 0
+    tagged_len = -1  # To avoid counting ROOT word as a token
     num_punctuations = 0  # count how many tokens are punctuation
     tagged_sentence = []
     mapping = []
 
     for cnt, word in enumerate(sentence):
-        if pos_list[cnt] not in ['p', 'PUNCT']:  # non-punctuation token
-            tagged_sentence.append(word)
-            mapping.append(cnt - num_punctuations)
-            tagged_len += 1
-        else:  # punctuation token
+        if pos_list[cnt][1] in ['p', 'PUNCT', 'punct']:  # punctuation token
             tagged_sentence.append(IGNORED_WORD)
             num_punctuations += 1
             mapping.append(IGNORED_FLAG)
+        else:  # non-punctuation token
+            if pos_list[cnt][0] in ['NUM']:  # numeric token
+                tagged_sentence.append("<NUM>")
+            else:
+                tagged_sentence.append(word)
+            mapping.append(cnt - num_punctuations)
+            tagged_len += 1
 
     return tagged_sentence, tagged_len, mapping
 
@@ -61,7 +64,7 @@ def main(argv):
     """
 
     if len(argv) < 4:
-        print("Usage: python conll2ull.py <dirpath> <punct_flag> <max_length>")
+        print("Usage: python conll2ull.py <dirpath> <punct_flag> <max_length> <lower_caps>")
 
     dirpath = argv[0]
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
@@ -73,7 +76,7 @@ def main(argv):
 
     num_parses = 0  # Num of parses in output file
     sentence = [ROOT_WORD]
-    pos_list = ['ROOT']  # List with POS for each word, to detect punctuation
+    pos_list = [('ROOT', 'ROOT')]  # List with POS for each word, to detect punctuation
     link_ids = []  # List with word ids for each link
 
     # Build directory structure for converted corpus parses
@@ -84,14 +87,19 @@ def main(argv):
         os.mkdir(newdir + 'corpus')
 
     for conll_filename in os.scandir(dirpath):
-        if conll_filename.path.endswith('.conll') and conll_filename.is_file():
+        if conll_filename.path.endswith(('.conll', '.conllu')) and conll_filename.is_file():
             with open(conll_filename, 'r') as fi:
                 with open(newdir+'GS/'+conll_filename.name + ".txt.ull", 'w') as fo:
                     with open(newdir+'corpus/'+conll_filename.name + ".txt", 'w') as fc:
                         lines = fi.readlines()
                         for line in lines:
+                            split_line = line.split('\t')
+                            chars = '.-'  # Chars that signal specially processed words in field 0 in UD corpora
+                            # Skip comments
+                            if line.startswith("#"):
+                                pass
                             # Process parse when newline is found
-                            if line == "\n":
+                            elif line == "\n":
                                 if punct_flag:  # Punctuation removal is an option
                                     tagged_sent, tagged_len, mapping = tag_punctuation(sentence, pos_list)
                                 else:
@@ -111,16 +119,16 @@ def main(argv):
                                 # reset arrays
                                 sentence = [ROOT_WORD]
                                 link_ids = []
-                                pos_list = ['ROOT']
+                                pos_list = [('ROOT', 'ROOT')]
 
                             # Links are still being processed
-                            else:
+                            # Discards words processed in a special way in UD corpora
+                            elif all((c not in chars) for c in split_line[0]):
                                 if lower_caps:
-                                    line = line.lower()
-                                split_line = line.split('\t')
+                                    split_line[1] = split_line[1].lower()
                                 # store ordered links indexes
                                 link_ids.append([int(split_line[6]), int(split_line[0])])
-                                pos_list.append(split_line[7])
+                                pos_list.append((split_line[3], split_line[7]))
                                 sentence.append(split_line[1])  # build sentence array
 
     print(f"Converted a total of {num_parses} parses with len <= {max_length}")
