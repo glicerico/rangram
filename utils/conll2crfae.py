@@ -59,10 +59,10 @@ def main(argv):
     punct_flag = bool(int(argv[1]))  # Flag to remove punctuation
     punct_str = punct_flag * 'noPunct'  # String flag
     max_length = int(argv[2])  # max length of sentences to process after punctuation removal (if any)
-    lower_caps = bool(int(argv[3]))  # Flag to convert to lowercaps
-    lower_str = lower_caps * 'lower'
+    lower_flag = bool(int(argv[3]))  # Flag to convert to lowercaps
+    lower_str = lower_flag * 'lower'
     print(f"\nProcessing files in {dirpath}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
-    print(f"lower_caps={lower_str}\n")
+    print(f"lower_caps={lower_flag}\n")
 
     num_parses = 0  # Num of parses in output file
     sentence = []
@@ -117,7 +117,7 @@ def main(argv):
                             # Links are still being processed
                             # Discards words processed in a special way in UD corpora
                             elif all((c not in chars) for c in split_line[0]):
-                                if lower_caps:
+                                if lower_flag:
                                     split_line[1] = split_line[1].lower()
                                 sentence.append(split_line[1])  # build sentence array
                                 pos_list.append((split_line[3], split_line[7]))
