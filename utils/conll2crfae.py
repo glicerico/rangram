@@ -62,6 +62,7 @@ def main(argv):
     lower_caps = bool(int(argv[3]))  # Flag to convert to lowercaps
     lower_str = lower_caps * 'lower'
     print(f"\nProcessing files in {dirpath}\npunct_flag={punct_flag}\nmax_length={max_length}\n")
+    print(f"lower_caps={lower_str}\n")
 
     num_parses = 0  # Num of parses in output file
     sentence = []
