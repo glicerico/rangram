@@ -12,7 +12,8 @@ IGNORED_FLAG = -1
 
 def tag_punctuation(sentence, pos_list):
     """
-    Remove punctuation tokens, guided by the tags in the conll file
+    Remove punctuation tokens, guided by the tags in the conll file.
+    Also replace numeric POS by <NUM> token.
     """
     tagged_len = -1  # To avoid counting ROOT word as a token
     num_punctuations = 0  # count how many tokens are punctuation
@@ -20,6 +21,7 @@ def tag_punctuation(sentence, pos_list):
     mapping = []
 
     for cnt, word in enumerate(sentence):
+        # if pos_list[cnt][0] in ['.']:  # CRITERION FOR Convex-MST
         if pos_list[cnt][1] in ['p', 'PUNCT', 'punct']:  # punctuation token
             tagged_sentence.append(IGNORED_WORD)
             num_punctuations += 1
