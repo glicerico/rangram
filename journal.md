@@ -11,12 +11,13 @@ Equally important, we also get a Gold Standard to evaluate the processing method
 
 ***************************
 
-The first tested grammar [handgram1.grammar](data/handgram1.grammar) and consists of 6 grammatical classes
+The first tested grammar is [handgram1.grammar](data/handgram1.grammar),
+which consists of 6 grammatical classes
 (2 related to nouns, 1 to verbs, 1 to adjectives, 1 to adverbs and 1 to determiners).
 Each class has only one possible word and disjuncts are created having in mind the
 English language rules; no Zipfian distributions are expected in the resulting corpus.
 
-First corpora generated in workdir are of size 5, 10, 50, 100, 200, 500 and 1000 sentences.
+First corpora generated in workdir are of sizes 5, 10, 50, 100, 200, 500 and 1000 sentences.
 For each corpus, only a subset of the sentences are unique. The following lists the nbr
 of unique sentences per corpus size in this experiment:
 
@@ -66,7 +67,8 @@ the kids eat turtles
 3 eat 4 turtles
 ```
 
-which are correct according to the grammar, but feel weird in English.
+which are correct according to the grammar, but is wrong positioning in English 
+(with those dependency links, the sentence should be `kids eat the turtles`).
 
 ***************************
 
@@ -403,7 +405,7 @@ The actual learned grammars match the functionality of `rangram2`, but because t
 We could also notice this by looking at the "parseability" measure outputted by the `grammar-learner`.
 
 *****************************
-We then continue with [handgram4](data/handgram4.grammar), which reduces the rules from handgram1 to distinguish between subject and object, adding a few more classes, with only two words per class.
+We then continue with [handgram4](data/handgram4.grammar), which changes the rules from handgram1 to distinguish between subject and object, adding a few more classes, with only two words per class.
 From a corpus with 17380 sentences, we get:
 
 F1 score [%]

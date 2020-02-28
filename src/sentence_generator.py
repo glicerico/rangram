@@ -63,18 +63,19 @@ class GrammarSampler(object):
                 self.disj_dict[key].append(conjunct_list)
             self.disj_dict[key] = tuple(self.disj_dict[key])
 
-    def generate_parse(self):
+    def generate_parse(self, starting_node=None):
         """
         MAIN ENTRY POINT
         Generate a lexical tree and return its corresponding sentence and parse
+        :param: starting_node:  Node to start the parse tree
         """
         # Reset global variables
         self.counter = 0
         self.ull_links = []
         self.links = {}
 
-        # First generate a random tree
-        self.generate_tree()
+        # First generate a random tree, with optional starting node
+        self.generate_tree(node_class=starting_node)
 
         sentence_array = np.full(len(self.tree), None)  # initialize empty sentence array
 
@@ -121,12 +122,12 @@ class GrammarSampler(object):
         Recursive method to generate a random tree of class elements from the
         grammar, starting with the given class.
         """
-        if self.counter == 0:  # handle initial case
+        if node_class:  # select one valid production of this class randomly
+            conjunct = self.choose_conjunct(connector, self.disj_dict[node_class])
+        else:  # handle initial case
             node_class = rand.randint(0, len(self.disj_dict) - 1)  # choose random class to begin
             conjunct = rand.sample(self.disj_dict[node_class], 1)[0]  # choose random conjunct
             self.tree = [(self.counter, node_class)]
-        else:  # select one valid production of this class randomly
-            conjunct = self.choose_conjunct(connector, self.disj_dict[node_class])
 
         parent_counter = self.counter  # save current counter for link creation
         size_r = 0  # words inserted to the right by this call of method
@@ -187,3 +188,4 @@ class GrammarSampler(object):
         if parent_string not in self.links:
             self.links[parent_string] = []
         self.links[parent_string].append(child_string)
+
