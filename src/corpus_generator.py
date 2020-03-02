@@ -6,7 +6,7 @@
 
 import sys
 import getopt
-from sentence_generator import GrammarSampler
+from sentence_generator import GrammarSampler, Grammar
 
 
 def main(argv):
@@ -77,13 +77,14 @@ def generate_corpus(grammar_mode: str, corpus_size: int, outfile: str, input_gra
     Corpus generator. Uses class GrammarSampler in sentence_generator.py
     """
 
-    grammar = GrammarSampler(input_grammar)
+    grammar = Grammar(input_grammar)
+    sampler = GrammarSampler(grammar)
     sentences = set()  # keeps unique sentences
 
     with open(outfile, 'w') as fcorpus:
         with open(outfile + ".ull", 'w') as fparses:
             for counter in range(0, corpus_size):
-                sentence, parse = grammar.generate_parse()
+                sentence, parse = sampler.generate_parse()
                 if sentence not in sentences:
                     sentences.add(sentence)
                     fcorpus.write(sentence + '\n\n')
