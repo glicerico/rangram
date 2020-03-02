@@ -10,29 +10,23 @@ import random as rand
 import re
 
 
-class GrammarSampler(object):
+class Grammar:
     """
-    Class to generate a random sentence and parse from a given grammar
+    Class containing a link-parser grammar
     """
-
     def __init__(self, grammar_file):
         """
-        Initialize class object. Takes a grammar file in the Link Grammar format.
+        Initialize grammar. Reads grammar from Link Grammar-formatted file.
+        :param grammar_file:
         """
         self.disj_dict = {}
         self.word_dict = {}
         self.grammar_parser(grammar_file)
-        self.counter = 0  # tracks order of words generation
-        self.links = {}
-        self.sentence = None
-        self.tree = []
-        self.ull_parse = None
-        self.ull_links = []
 
     def grammar_parser(self, grammar_file):
         """
         Opens a given grammar file and parses both vocabulary
-        and disjuncts from each class, then puts them in the 
+        and disjuncts from each class, then puts them in the
         proper class variables.
         """
         with open(grammar_file, 'r') as fg:
@@ -62,6 +56,24 @@ class GrammarSampler(object):
                     conjunct_list.append((int(split_conn[0][1:]), int(split_conn[1][:-1])))
                 self.disj_dict[key].append(conjunct_list)
             self.disj_dict[key] = tuple(self.disj_dict[key])
+
+
+class GrammarSampler:
+    """
+    Class to generate a random sentence and parse from a given grammar
+    """
+    def __init__(self, grammar):
+        """
+        Initialize class object. Takes a grammar object.
+        """
+        self.disj_dict = grammar.disj_dict  # Local rules dictionary
+        self.word_dict = grammar.word_dict  # Local vocab dictionary
+        self.counter = 0  # tracks order of words generation
+        self.links = {}
+        self.sentence = None
+        self.tree = []
+        self.ull_parse = None
+        self.ull_links = []
 
     def generate_parse(self, starting_node=None, starting_rule=None):
         """
