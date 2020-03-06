@@ -23,6 +23,15 @@ class Grammar:
         self.word_dict = {}
         self.grammar_parser(grammar_file)
 
+    def set_disj_dict(self, disj_dict):
+        self.disj_dict = disj_dict
+
+    def get_disj_dict(self):
+        return self.disj_dict
+
+    def set_word_dict(self, word_dict):
+        self.word_dict = word_dict
+
     def grammar_parser(self, grammar_file):
         """
         Opens a given grammar file and parses both vocabulary
@@ -105,7 +114,7 @@ class GrammarSampler:
                     self.ull_links.append(f"{val_pos} {val_word} {key_pos} {key_word}")
 
         # Concatenate parse text output
-        self.sentence = " ".join(sentence_array)
+        self.sentence = " ".join(sentence_array) + "."  # Add final punctuation, better for BERT
         self.ull_links.sort()
         sorted_links = "\n".join(self.ull_links)
         print(f"ULL parse: \n{self.sentence}\n{sorted_links}\n")
