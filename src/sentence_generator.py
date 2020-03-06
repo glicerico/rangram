@@ -10,29 +10,32 @@ import random as rand
 import re
 
 
-class GrammarSampler(object):
+class Grammar:
     """
-    Class to generate a random sentence and parse from a given grammar
+    Class containing a link-parser grammar
     """
-
     def __init__(self, grammar_file):
         """
-        Initialize class object. Takes a grammar file in the Link Grammar format.
+        Initialize grammar. Reads grammar from Link Grammar-formatted file.
+        :param grammar_file:
         """
         self.disj_dict = {}
         self.word_dict = {}
         self.grammar_parser(grammar_file)
-        self.counter = 0  # tracks order of words generation
-        self.links = {}
-        self.sentence = None
-        self.tree = []
-        self.ull_parse = None
-        self.ull_links = []
+
+    def set_disj_dict(self, disj_dict):
+        self.disj_dict = disj_dict
+
+    def get_disj_dict(self):
+        return self.disj_dict
+
+    def set_word_dict(self, word_dict):
+        self.word_dict = word_dict
 
     def grammar_parser(self, grammar_file):
         """
         Opens a given grammar file and parses both vocabulary
-        and disjuncts from each class, then puts them in the 
+        and disjuncts from each class, then puts them in the
         proper class variables.
         """
         with open(grammar_file, 'r') as fg:
@@ -63,18 +66,37 @@ class GrammarSampler(object):
                 self.disj_dict[key].append(conjunct_list)
             self.disj_dict[key] = tuple(self.disj_dict[key])
 
-    def generate_parse(self):
+
+class GrammarSampler:
+    """
+    Class to generate a random sentence and parse from a given grammar
+    """
+    def __init__(self, grammar):
+        """
+        Initialize class object. Takes a grammar object.
+        """
+        self.disj_dict = grammar.disj_dict  # Local rules dictionary
+        self.word_dict = grammar.word_dict  # Local vocab dictionary
+        self.counter = 0  # tracks order of words generation
+        self.links = {}
+        self.sentence = None
+        self.tree = []
+        self.ull_parse = None
+        self.ull_links = []
+
+    def generate_parse(self, starting_node=None, starting_rule=None):
         """
         MAIN ENTRY POINT
         Generate a lexical tree and return its corresponding sentence and parse
+        :param: starting_node:  Node to start the parse tree
         """
         # Reset global variables
         self.counter = 0
         self.ull_links = []
         self.links = {}
 
-        # First generate a random tree
-        self.generate_tree()
+        # First generate a random tree, with optional starting node
+        self.generate_tree(node_class=starting_node, rule=starting_rule)
 
         sentence_array = np.full(len(self.tree), None)  # initialize empty sentence array
 
@@ -92,7 +114,7 @@ class GrammarSampler(object):
                     self.ull_links.append(f"{val_pos} {val_word} {key_pos} {key_word}")
 
         # Concatenate parse text output
-        self.sentence = " ".join(sentence_array)
+        self.sentence = " ".join(sentence_array) + "."  # Add final punctuation, better for BERT
         self.ull_links.sort()
         sorted_links = "\n".join(self.ull_links)
         print(f"ULL parse: \n{self.sentence}\n{sorted_links}\n")
@@ -116,17 +138,19 @@ class GrammarSampler(object):
         valid_conjs = [conj for conj in disjunct if connector in conj]  # filters inappropriate connectors
         return list(rand.choice(valid_conjs))
 
-    def generate_tree(self, node_class=None, connector=(), parent_size=0, node_pos=0):
+    def generate_tree(self, node_class=None, rule=None, connector=(), parent_size=0, node_pos=0):
         """
         Recursive method to generate a random tree of class elements from the
-        grammar, starting with the given class.
+        grammar, starting with the given class and rule.
         """
         if self.counter == 0:  # handle initial case
-            node_class = rand.randint(0, len(self.disj_dict) - 1)  # choose random class to begin
-            conjunct = rand.sample(self.disj_dict[node_class], 1)[0]  # choose random conjunct
+            if node_class is None:
+                node_class = rand.randint(0, len(self.disj_dict) - 1)  # choose random class to begin
+            if rule is None:
+                rule = rand.sample(self.disj_dict[node_class], 1)[0]  # choose random rule
             self.tree = [(self.counter, node_class)]
         else:  # select one valid production of this class randomly
-            conjunct = self.choose_conjunct(connector, self.disj_dict[node_class])
+            rule = self.choose_conjunct(connector, self.disj_dict[node_class])
 
         parent_counter = self.counter  # save current counter for link creation
         size_r = 0  # words inserted to the right by this call of method
@@ -135,7 +159,7 @@ class GrammarSampler(object):
         insert_pos_l = node_pos  # position to insert on the left of current node
 
         # Insert new node, and recurse to expand the node
-        for conn in conjunct:
+        for conn in rule:
             new_node_class = list(conn)
             new_node_class.remove(node_class)  # obtain which other class is linked
 
@@ -153,13 +177,15 @@ class GrammarSampler(object):
                     self.tree.insert(insert_pos_r, new_node)
                     size_r += 1
                     size_branch = \
-                        self.generate_tree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_r)
+                        self.generate_tree(node_class=new_node_class[0], connector=conn,
+                                           parent_size=size_r + size_l + parent_size, node_pos=insert_pos_r)
                     size_r += size_branch  # add size of newly added branch
                 else:  # left
                     self.tree.insert(insert_pos_l, new_node)
                     size_l += 1
                     size_branch = \
-                        self.generate_tree(new_node_class[0], conn, size_r + size_l + parent_size, insert_pos_l)
+                        self.generate_tree(node_class=new_node_class[0], connector=conn,
+                                           parent_size=size_r + size_l + parent_size, node_pos=insert_pos_l)
                     size_l += size_branch  # add size of newly added branch
 
                 insert_pos_r += 1 + size_branch  # update for added word and branch
@@ -187,3 +213,4 @@ class GrammarSampler(object):
         if parent_string not in self.links:
             self.links[parent_string] = []
         self.links[parent_string].append(child_string)
+
