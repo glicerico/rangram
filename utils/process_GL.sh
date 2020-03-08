@@ -15,7 +15,7 @@ gram_name=$1
 input_parses=$2
 
 HOME="/home/andres/"
-rangram_path="$HOME/various_repos/rangram"
+rangram_path="$HOME/repositories/rangram"
 rangram_workdir="$HOME/Documents/ULL_project/rangram_workdir/"
 ULL_path="$HOME/MyOpenCogSources/language-learning/"
 
