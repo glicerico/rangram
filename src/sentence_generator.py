@@ -19,9 +19,11 @@ class Grammar:
         Initialize grammar. Reads grammar from Link Grammar-formatted file.
         :param grammar_file:
         """
-        self.disj_dict = {}
-        self.word_dict = {}
+        self.disj_dict = {}  # Stores disjuncts for each class
+        self.word_dict = {}  # Stores vocab for each class
+        self.conn_dict = {}  # Stores which classes contain each connector
         self.grammar_parser(grammar_file)
+        self.build_conn_dict()
 
     def set_disj_dict(self, disj_dict):
         self.disj_dict = disj_dict
@@ -66,6 +68,17 @@ class Grammar:
         for key, value in rules.items():
             self.disj_dict[key] = [conn.split(" & ") for conn in value]
 
+    def build_conn_dict(self):
+        """
+        Build structure storing which grammar classes contain each different connector
+        """
+        for gram_class, disj in self.disj_dict.items():
+            for rule in disj:
+                for conn in rule:
+                    if conn not in self.conn_dict:
+                        self.conn_dict[conn] = set()  # Alternative: use list for weighting relative to conn frequency
+                    self.conn_dict[conn].add(gram_class)
+
 
 class GrammarSampler:
     """
@@ -77,6 +90,7 @@ class GrammarSampler:
         """
         self.disj_dict = grammar.disj_dict  # Local rules dictionary
         self.word_dict = grammar.word_dict  # Local vocab dictionary
+        self.conn_dict = grammar.conn_dict  # Local connector dictionary
         self.counter = 0  # tracks order of words generation
         self.links = {}
         self.sentence = None
@@ -89,13 +103,14 @@ class GrammarSampler:
         MAIN ENTRY POINT
         Generate a lexical tree and return its corresponding sentence and parse
         :param: starting_node:  Node to start the parse tree
+        :param: starting_rule:  Rule to start the parse tree
         """
         # Reset global variables
         self.counter = 0
         self.ull_links = []
         self.links = {}
 
-        # First generate a random tree, with optional starting node
+        # First generate a random tree, with optional starting node and rule
         self.generate_tree(node_class=starting_node, rule=starting_rule)
 
         sentence_array = np.full(len(self.tree), None)  # initialize empty sentence array
@@ -114,7 +129,8 @@ class GrammarSampler:
                     self.ull_links.append(f"{val_pos} {val_word} {key_pos} {key_word}")
 
         # Concatenate parse text output
-        self.sentence = " ".join(sentence_array) + "."  # Add final punctuation, better for BERT
+        # TODO: Avoid adding punctuation in the next line, and make it come from the grammars.
+        self.sentence = " ".join(sentence_array) + "."  # Add final punctuation, better for BERT.
         self.ull_links.sort()
         sorted_links = "\n".join(self.ull_links)
         print(f"ULL parse: \n{self.sentence}\n{sorted_links}\n")
@@ -131,11 +147,37 @@ class GrammarSampler:
         return split_word[0], self.tree.index(word_tuple) + 1
 
     @staticmethod
-    def choose_conjunct(connector, disjunct):
+    def swap_connector(connector):
         """
-        Chooses a random conjunct from the ones in disjunct that contain connector
+        Change direction of connection to given connector
+        :param connector:
+        :return: Connector in opposite direction
         """
-        valid_conjs = [conj for conj in disjunct if connector in conj]  # filters inappropriate connectors
+        direction = connector[-1]
+        if direction == '+':
+            opposite_direction = '-'
+        elif direction == '-':
+            opposite_direction = '+'
+        else:
+            print("ERROR: Connector missing directionality in grammar file!!!")
+            exit(1)
+        return connector[:-1] + opposite_direction
+
+    def choose_linked_class(self, connector):
+        """
+        Randomly choose a class that can connect with given connector (opposite directionality)
+        :param connector:
+        :return:
+        """
+        swapped_connector = self.swap_connector(connector)
+        return rand.sample(self.conn_dict[swapped_connector], 1)[0]
+
+    def choose_conjunct(self, connector, disjunct):
+        """
+        Chooses a random conjunct from the ones in disjunct that contain connector in opposite direction
+        """
+        opp_connector = self.swap_connector(connector)
+        valid_conjs = [conj for conj in disjunct if opp_connector in conj]  # filters inappropriate connectors
         return list(rand.choice(valid_conjs))
 
     def generate_tree(self, node_class=None, rule=None, connector=(), parent_size=0, node_pos=0):
@@ -160,31 +202,34 @@ class GrammarSampler:
 
         # Insert new node, and recurse to expand the node
         for conn in rule:
-            new_node_class = list(conn)
-            new_node_class.remove(node_class)  # obtain which other class is linked
+            new_node_class = self.choose_linked_class(conn)
+            direction = conn[-1]
 
-            if conn == connector:  # don't insert if conn is parent node; and adjust insert_pos
-                if conn.index(node_class) == 0:
+            if conn[:-1] == connector[:-1]:  # don't insert if conn is parent node; and adjust insert_pos
+                if direction == "+":  # right
                     insert_pos_r += parent_size
-                else:
+                elif direction == "-":  # left
                     insert_pos_l -= parent_size
+                else:
+                    print("ERROR: Connector missing directionality in grammar connector!!!")
+                    exit(1)
             else:
                 self.counter += 1
-                new_node = (self.counter, new_node_class[0])
+                new_node = (self.counter, new_node_class)
                 self.construct_link((parent_counter, node_class), new_node)  # store link
                 # insert to right or left and recurse
-                if conn.index(node_class) == 0:  # right
+                if direction == "+":  # right
                     self.tree.insert(insert_pos_r, new_node)
                     size_r += 1
                     size_branch = \
-                        self.generate_tree(node_class=new_node_class[0], connector=conn,
+                        self.generate_tree(node_class=new_node_class, connector=conn,
                                            parent_size=size_r + size_l + parent_size, node_pos=insert_pos_r)
                     size_r += size_branch  # add size of newly added branch
                 else:  # left
                     self.tree.insert(insert_pos_l, new_node)
                     size_l += 1
                     size_branch = \
-                        self.generate_tree(node_class=new_node_class[0], connector=conn,
+                        self.generate_tree(node_class=new_node_class, connector=conn,
                                            parent_size=size_r + size_l + parent_size, node_pos=insert_pos_l)
                     size_l += size_branch  # add size of newly added branch
 

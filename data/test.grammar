@@ -1,0 +1,31 @@
+% Grammar Learner v.0.7 2020-03-08 04:52:00 UTC
+<dictionary-version-number>: V0v0v7+;
+<dictionary-locale>: EN4us+;
+
+% B
+"candy":
+(CB-) or (CB- & BE+);
+
+% C
+"eat":
+(DC-) or (DC- & CB+) or (DC- & CE+) or (DC- & CG+ & CB+);
+
+% D
+"kids":
+(DC+) or (FD- & GD- & DC+) or (GD- & DC+);
+
+% E
+"quickly":
+(BE-) or (CE-);
+
+% F
+"small":
+(FD+) or (GF-);
+
+% G
+"the":
+(CG-) or (CG- & GF+) or (GD+);
+
+<UNKNOWN-WORD>: XXX+;
+
+% 6 word clusters, 6 Link Grammar rules.
