@@ -87,7 +87,7 @@ def generate_corpus(grammar_mode: str, corpus_size: int, outfile: str, input_gra
                 sentence, parse = sampler.generate_parse()
                 if sentence not in sentences:
                     sentences.add(sentence)
-                    fcorpus.write(sentence + '\n\n')
+                    fcorpus.write(sentence + '\n')
                     fparses.write(sentence + '\n')
                     fparses.write(parse + '\n\n')
     print(f"Generated {len(sentences)} unique sentences, out of {corpus_size} requested\n")
