@@ -560,10 +560,12 @@ When `stream-parser` beats `sequential`, the best-performing parameters tend to 
 - The `ULL parser` isn't able to score better than sequential in any of the studied cases.
 
 **********************
-## March, 2020
+## 8 Mar, 2020
 
 A new use-case has come up for the sentence generator in this repository, related
 to the [grammar induction](https://github.com/glicerico/gramind_transformer) project.
 
 As a need for that project, and an effort to accept rules in the standard link-gramamr
 format, the sentence_generator is being modified.
+
+Modifications took place, and succeeded (at least no bugs found yet.)
