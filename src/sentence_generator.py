@@ -163,21 +163,45 @@ class GrammarSampler:
             exit(1)
         return connector[:-1] + opposite_direction
 
+    @staticmethod
+    def check_match(connector, rule):
+        """
+        Checks if connector (or a LG generalization of it) matches a connector inside rule
+        :param connector:
+        :param rule:
+        :return:
+        """
+        # Check capital letters first
+        connector_caps = [c for c in connector if c.isupper()]
+        for conn in rule:
+            conn_caps = [c for c in conn if c.isupper()]
+            if connector_caps == conn_caps:  # Compare in detail only if capitals match
+                compare_size = min(len(connector[:-1]), len(conn[:-1]))  # Don't count direction
+                if (conn[:compare_size] + conn[-1]) == (connector[:compare_size] + connector[-1]):  # Restore direction
+                    return True
+
+        return False
+
     def choose_linked_class(self, connector):
         """
         Randomly choose a class that can connect with given connector (opposite directionality)
         :param connector:
         :return:
         """
+        choose_from = []
         swapped_connector = self.swap_connector(connector)
-        return rand.sample(self.conn_dict[swapped_connector], 1)[0]
+        for conn in self.conn_dict:
+            if self.check_match(swapped_connector, [conn]):
+                choose_from.extend(self.conn_dict[conn])
+        choose_from = set(choose_from)  # Alternative: remove this to weigh samples by number of connector matches
+        return rand.sample(choose_from, 1)[0]
 
     def choose_conjunct(self, connector, disjunct):
         """
         Chooses a random conjunct from the ones in disjunct that contain connector in opposite direction
         """
         opp_connector = self.swap_connector(connector)
-        valid_conjs = [conj for conj in disjunct if opp_connector in conj]  # filters inappropriate connectors
+        valid_conjs = [conj for conj in disjunct if self.check_match(opp_connector, conj)]  # filter wrong connectors
         return list(rand.choice(valid_conjs))
 
     def generate_tree(self, node_class=None, rule=None, connector=(), parent_size=0, node_pos=0):
@@ -201,11 +225,16 @@ class GrammarSampler:
         insert_pos_l = node_pos  # position to insert on the left of current node
 
         # Insert new node, and recurse to expand the node
+        parent_found = False
         for conn in rule:
             new_node_class = self.choose_linked_class(conn)
             direction = conn[-1]
 
-            if conn[:-1] == connector[:-1]:  # don't insert if conn is parent node; and adjust insert_pos
+            # don't insert if conn is parent node; adjust insert_pos
+            if not parent_found and self.check_match(self.swap_connector(conn), [connector]):
+                # Alternative to parent_found flag:
+                # remove one occurrence of connector from rule, and adjust insert_pos accordingly.
+                parent_found = True
                 if direction == "+":  # right
                     insert_pos_r += parent_size
                 elif direction == "-":  # left

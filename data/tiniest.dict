@@ -17,7 +17,7 @@ O-;
 % Class 2
 this: 
 O- or
-(SS+ & R-) or SIs- or D+;
+(Ss+ & R-) or SIs- or D+;
 %(O- or (Ss+ & R-) or SIs-) or D+;
 
 % Class 3
