@@ -14,7 +14,7 @@ maxWinParse=10
 db_name="test"
 
 HOME=/home/andres
-utils_dir="$HOME/various_repos/rangram/utils/"
+utils_dir="$HOME/repositories/rangram/utils/"
 rangram_workdir="$HOME/Documents/ULL_project/rangram_workdir/"
 workdir_path=$rangram_workdir/$gram_name
 

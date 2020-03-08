@@ -55,7 +55,7 @@
       "ref_path": "",
     	"output_path": "%PREV",
     	"grammar_root": "",
-      "template_path": "/home/andres/various_repos/rangram/templates/dict-template",
+      "template_path": "/home/andres/repositories/rangram/templates/dict-template",
     	"linkage_limit": "1000",
     	"rm_grammar_dir": true,
     	"ignore_left_wall": true,

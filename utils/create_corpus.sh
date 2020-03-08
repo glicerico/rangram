@@ -16,7 +16,7 @@ corpus_size=$2
 
 HOME=/home/andres
 rangram_workdir="$HOME/Documents/ULL_project/rangram_workdir/"
-rangram_repo="$HOME/various_repos/rangram"
+rangram_repo="$HOME/repositories/rangram"
 
 cd $rangram_workdir || exit
 mkdir -p "$grammarname"
