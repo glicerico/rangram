@@ -114,7 +114,7 @@ class GrammarSampler:
                     self.ull_links.append(f"{val_pos} {val_word} {key_pos} {key_word}")
 
         # Concatenate parse text output
-        self.sentence = " ".join(sentence_array) + "."  # Add final punctuation, better for BERT
+        self.sentence = " ".join(sentence_array) + " ."  # Add final punctuation, better for BERT
         self.ull_links.sort()
         sorted_links = "\n".join(self.ull_links)
         print(f"ULL parse: \n{self.sentence}\n{sorted_links}\n")
