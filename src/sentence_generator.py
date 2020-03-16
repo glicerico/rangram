@@ -130,7 +130,7 @@ class GrammarSampler:
 
         # Concatenate parse text output
         # TODO: Avoid adding punctuation in the next line, and make it come from the grammars.
-        self.sentence = " ".join(sentence_array) + "."  # Add final punctuation, better for BERT.
+        self.sentence = " ".join(sentence_array) + " ."  # Add final punctuation, better for BERT
         self.ull_links.sort()
         sorted_links = "\n".join(self.ull_links)
         print(f"ULL parse: \n{self.sentence}\n{sorted_links}\n")
