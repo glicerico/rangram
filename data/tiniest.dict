@@ -1,0 +1,70 @@
+ %***************************************************************************%
+ %                                                                           %
+ %       Copyright (C) 1991-1998  Daniel Sleator and Davy Temperley          %
+ %       http://www.link.cs.cmu.edu/link                                     %
+ %                                                                           %
+ %***************************************************************************%
+
+% Class 0
+dog cat woman man park yard bone neighbor store street bird hammer nose party friend house movie brother sister diner student exam:
+(Ds- & Ss+ & R-) or (Ds- & SIs-) or (A- & Ds- & Ss+ & R-) or (A- & Ds- & SIs-) or (Ds- & R+ & Bs+ & Ss+ & R-) or (Ds- & R+ & Bs+ & SIs-) or (A- & Ds- & R+ & Bs+ & Ss+ & R-) or (A- & Ds- & R+ & Bs+ & Ss+ & SIs-);
+%{@A-} & Ds- & {(R+ & Bs+)} & ((Ss+ & R-) or SIs-);
+
+% Class 1
+me him them us: 
+O-;
+
+% Class 2
+this: 
+O- or
+(Ss+ & R-) or SIs- or D+;
+%(O- or (Ss+ & R-) or SIs-) or D+;
+
+% Class 3
+the: 
+D+;
+
+% Class 4
+a: 
+Ds+;
+
+% Class 5
+does: 
+(SIs+ & I+) or (Ss- & B-) or (Ss- & O+) or (Ss- & B- & MV+) or (Ss- & O+ & MV+) or (Ss- & I+) or (E- & Ss- & B-) or (E- & Ss- & O+) or (E- & Ss- & B- & MV+) or (E- & Ss- & O+ & MV+) or (E- & Ss- & I+);
+%(SIs+ & I+) or ({@E-} & Ss- & (((B- or O+) & {@MV+}) or I+));
+
+% Class 6
+has:
+(SIs+ & PP+) or (Ss- & PP+) or (Ss- & B-) or (Ss- & O+) or (E- & Ss- & PP+) or (E- & Ss- & B-) or (E- & Ss- & O+) or (Ss- & B- & MV+) or (Ss- & O+ & MV+) or (E- & Ss- & B- & MV+) or (E- & Ss- & O+ & MV+);
+%(SIs+ & PP+) or ({@E-} & Ss- & (((B- or O+) & {@MV+}) or PP+));
+
+% Class 7
+is was: 
+(Ss- & AF-) or (Ss- & O+) or (Ss- & B-) or (SIs+ & AF-) or (SIs+ & O+) or (SIs+ & B-) or (Ss- & O+ & MV+) or (Ss- & B- & MV+) or (SIs+ & O+ & MV+) or (SIs+ & B- & MV+);
+%((Ss- or SIs+) & (((O+ or B-) & {@MV+}) or AF-));
+
+% Class 8
+will can may must could should would might:
+(SI+ & I+) or
+(S- & I+);
+%(SI+ or S-) & I+;
+
+% Class 9
+run come: 
+I- or PP- or (E- & I-) or (E- & PP-) or (I- & MV+) or (PP- & MV+) or (E- & I- & MV+) or (E- & PP- & MV+);
+%{@E-} & (I- or PP-) & {@MV+};
+
+% Class 10
+runs comes goes: 
+Ss- or (E- & Ss-) or (Ss- & MV+) or (E- & Ss- & MV+);
+%{@E-} & Ss- & {@MV+};
+
+% Class 11
+recently sometimes soon gradually specifically generally initially ultimately already now sadly broadly:
+E+ or MV-;
+
+% Class 12
+fast slow short long black white big small beautiful ugly tired angry:
+A+ or AF+ or (AF+ & MV+);
+%(A+ or (AF+ & {@MV+}));
+
